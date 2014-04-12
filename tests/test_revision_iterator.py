@@ -1,7 +1,7 @@
 import unittest
 import os
 import gzip
-from wiki_edits.wiki.revision_iterator import RevisionIterator
+from wikiedits.wiki.revision_iterator import RevisionIterator
 
 
 class RevisionIteratorTest(unittest.TestCase):

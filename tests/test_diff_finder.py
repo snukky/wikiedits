@@ -1,5 +1,5 @@
 import unittest
-from wiki_edits.diff_finder import DiffFinder
+from wikiedits.diff_finder import DiffFinder
 
 
 class DiffFinderTest(unittest.TestCase):

@@ -1,4 +1,4 @@
-from wiki_edits.wiki.wiki_dump_parser import WikiDumpParser
+from wikiedits.wiki.wiki_dump_parser import WikiDumpParser
 
 import WikiExtractor
 import re

@@ -10,7 +10,7 @@ import logging
 
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
 
-from wiki_edits.edits_extractor import EditsExtractor
+from wikiedits.edits_extractor import EditsExtractor
 
 
 def main():

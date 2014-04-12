@@ -1,4 +1,4 @@
-from wiki_edits.diff_finder import DiffFinder
+from wikiedits.diff_finder import DiffFinder
 
 import nltk.data
 import Levenshtein

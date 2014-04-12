@@ -1,5 +1,5 @@
-from wiki_edits.diff_finder import DiffFinder
-from wiki_edits.edits_selector import EditsSelector
+from wikiedits.diff_finder import DiffFinder
+from wikiedits.edits_selector import EditsSelector
 
 
 class EditsExtractor:

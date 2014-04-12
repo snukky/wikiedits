@@ -1,10 +1,10 @@
 Wiki Edits
 ==========
 
-A collection of scripts for automatic extraction of edited text
-fragments from text edition histories, such as Wikipedia revisions. It
-was used to build the WikEd Error Corpus - a corpus of corrective
-Wikipedia edits. 
+A collection of scripts for automatic extraction of edited sentences
+from text edition histories, such as Wikipedia revisions. It was used
+to build the WikEd Error Corpus - a corpus of corrective Wikipedia
+edits. 
 
 
 Requirements

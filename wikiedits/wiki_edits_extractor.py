@@ -1,5 +1,5 @@
 from wiki.revision_iterator import RevisionIterator
-from wiki_edits.edits_extractor import EditsExtractor
+from wikiedits.edits_extractor import EditsExtractor
 
 
 class WikiEditsExtractor:

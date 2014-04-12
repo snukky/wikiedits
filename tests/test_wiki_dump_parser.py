@@ -1,7 +1,7 @@
 import unittest
 import os
 import gzip
-from wiki_edits.wiki.wiki_dump_parser import WikiDumpParser
+from wikiedits.wiki.wiki_dump_parser import WikiDumpParser
 
 
 class WikiDumpParserTest(unittest.TestCase):

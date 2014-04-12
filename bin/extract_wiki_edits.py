@@ -11,7 +11,7 @@ import yaml
 
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
 
-from wiki_edits.wiki_edits_extractor import WikiEditsExtractor
+from wikiedits.wiki_edits_extractor import WikiEditsExtractor
 
 
 def main():
