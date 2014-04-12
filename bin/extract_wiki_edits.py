@@ -3,6 +3,7 @@
 import sys, os
 import argparse
 import logging
+import yaml
 
 # it may be required if you have installed NLTK locally
 #import nltk.data
@@ -28,7 +29,7 @@ def main():
 
     for edits, meta in wiki.extract_edits():
         if args.meta_data and edits:
-            print "### %s" % meta
+            print format_meta_data(meta)
             print ""
 
         if not args.debug:
@@ -36,6 +37,10 @@ def main():
                 print old_edit.encode('utf-8')
                 print new_edit.encode('utf-8')
                 print ""
+
+def format_meta_data(data):
+    lines = ["### %s" % line for line in yaml.dump(data).split('\n') if line]
+    return '\n'.join(lines)
 
 def parse_arguments():
     parser = argparse.ArgumentParser(
