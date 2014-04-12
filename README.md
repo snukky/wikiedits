@@ -21,12 +21,17 @@ Run tests by typing `nosetests` from main directory:
 Usage
 -----
 
-Example usages from `bin` directory:
+Example usage from `bin` directory:
 
-    ./extract_edits.py -o ../tests/data/lorem_ipsum.old.txt \
-        -n ../tests/data/lorem_ipsum.new.txt
+    ./extract_edits.py -o ../tests/data/lorem_ipsum.old.txt -n ../tests/data/lorem_ipsum.new.txt
+
+And with Wikipedia dump file:
 
     zcat ../tests/data/enwiki-20140102.tiny.xml.gz | ./extract_wiki_edits.py
+
+A bash script can be run to work with URL:
+
+    ./run_with_dump_url.sh /path/to/work/dir /path/to/dir/for/edits http://wiki.dump.7z
 
 
 Language-specific options
@@ -39,3 +44,5 @@ be checked or updated to run these scripts for non-English language:
   see: https://github.com/nltk/nltk_data/tree/gh-pages
 - regular expressions for filtering out reverted revisions,
   see file: `wikiedits/wiki/revision_iterator.py`
+
+Supported languages are: English, Polish.
