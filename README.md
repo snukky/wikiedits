@@ -15,16 +15,18 @@ Required python packages:
 - `nltk` with NLTK data, see: http://www.nltk.org/
 - `Levenshtein`, see: https://pypi.python.org/pypi/python-Levenshtein/
 
+Run tests by typing `nosetests` from main directory:
+
 
 Usage
 -----
 
 Example usages from `bin` directory:
 
-  ./extract_edits.py -o ../tests/data/lorem_ipsum.old.txt \
-      -n ../tests/data/lorem_ipsum.new.txt
+    ./extract_edits.py -o ../tests/data/lorem_ipsum.old.txt \
+        -n ../tests/data/lorem_ipsum.new.txt
 
-  zcat ../tests/data/enwiki-20140102.tiny.xml.gz | ./extract_wiki_edits.py
+    zcat ../tests/data/enwiki-20140102.tiny.xml.gz | ./extract_wiki_edits.py
 
 
 Language-specific options
@@ -36,4 +38,4 @@ be checked or updated to run these scripts for non-English language:
 - an availability of a model for NLTK punkt tokenizer, 
   see: https://github.com/nltk/nltk_data/tree/gh-pages
 - regular expressions for filtering out reverted revisions,
-  see file: TODO
+  see file: `wikiedits/wiki/revision_iterator.py`

@@ -4,7 +4,7 @@ from wikiedits.edits_extractor import EditsExtractor
 
 class WikiEditsExtractor:
     def __init__(self, filename, **kwargs):
-        self.revision = RevisionIterator(filename)
+        self.revision = RevisionIterator(filename, kwargs['lang'])
         self.extractor = EditsExtractor(**kwargs)
 
     def extract_edits(self):
