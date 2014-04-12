@@ -15,7 +15,7 @@ class EditsSelector:
                  min_words=3,
                  max_words=120,
                  length_diff=4,
-                 levenshtein_ratio=0.3):
+                 edit_ratio=0.3):
 
         self.segmenter = nltk.data.load('tokenizers/punkt/%s.pickle' % lang)
 
@@ -23,7 +23,7 @@ class EditsSelector:
         self.MIN_WORDS_IN_SENTENCE = min_words          # in words
         self.MAX_WORDS_IN_SENTENCE = max_words          # in words
         self.MAX_LENGTH_DIFF = length_diff              # on words
-        self.MAX_LEVENSHTEIN_RATIO = levenshtein_ratio  # on ascii words
+        self.MAX_LEVENSHTEIN_RATIO = edit_ratio         # on words
 
     def select_edits(self, old_text, new_text):
         if not self.__looks_like_text_edition(old_text, new_text):

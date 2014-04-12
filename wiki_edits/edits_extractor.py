@@ -3,9 +3,9 @@ from wiki_edits.edits_selector import EditsSelector
 
 
 class EditsExtractor:
-    def __init__(self):
+    def __init__(self, **kwargs):
         self.diff = DiffFinder()
-        self.selector = EditsSelector()
+        self.selector = EditsSelector(**kwargs)
     
     def extract_edits(self, old_text, new_text):
         frags = self.diff.edited_fragments(old_text.split("\n"),

@@ -3,9 +3,11 @@
 import sys, os
 import argparse
 import logging
-import nltk.data
 
+# it may be required if you have installed NLTK locally
+#import nltk.data
 #nltk.data.path.append('/home/user/.local/share/nltk_data')
+
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
 
 from wiki_edits.wiki_edits_extractor import WikiEditsExtractor
@@ -15,14 +17,17 @@ def main():
     args = parse_arguments()
 
     if args.debug: 
-        args.log_level = 'debug' 
-    set_log_level(args.log_level)
+        set_log_level('debug')
 
-    fi = args.dump_file or sys.stdin
-    wiki = WikiEditsExtractor(fi)
+    wiki = WikiEditsExtractor(args.dump_file or sys.stdin, 
+                              lang=args.language,
+                              min_words=args.min_words,
+                              max_words=args.max_words,
+                              length_diff=args.length_diff,
+                              edit_ratio=args.edit_ratio)
 
     for edits, meta in wiki.extract_edits():
-        if args.meta and edits:
+        if args.meta_data and edits:
             print "### %s" % meta
             print ""
 
@@ -33,20 +38,38 @@ def main():
                 print ""
 
 def parse_arguments():
-    help = "Extracts edited text fragments from Wikipedia revisions."
+    parser = argparse.ArgumentParser(
+        description="Extracts edited text fragments from Wikipedia revisions.",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
-    parser = argparse.ArgumentParser(description=help)
     parser.add_argument("-f", "--dump-file",
-                           help="specify XML dump file with all history " + 
-                                "(read from STDIN by default")
-    parser.add_argument("-m", "--meta", 
-                        help="add revision meta data as id, user, comment etc.",
+                        help="specify XML dump file with complete edit " \
+                             "history")
+    parser.add_argument("-m", "--meta-data", 
+                        help="add revision meta data like comment, user etc.",
                         action="store_true")
-    parser.add_argument("-l", "--log-level",
-                        help="set log level")
-    parser.add_argument("-d", "--debug", 
+    parser.add_argument("--debug", 
                         help="turn on debug mode",
                         action="store_true")
+
+    group = parser.add_argument_group("selection options")
+    group.add_argument("-l", "--language",
+                       default="english",
+                       help="specify language for NLTK sentence splitter")
+    group.add_argument("--min-words",
+                       type=int, default=2,
+                       help="set minimum length of sentence in words")
+    group.add_argument("--max-words",
+                       type=int, default=120,
+                       help="set maximum length of sentence in words")
+    group.add_argument("--length-diff",
+                       type=int, default=4,
+                       help="set maximum difference in length between " \
+                            "edited sentences")
+    group.add_argument("--edit-ratio",
+                       type=float, default=0.3,
+                       help="set maximum relative difference in edit " \
+                            "distance")
 
     return parser.parse_args()
 

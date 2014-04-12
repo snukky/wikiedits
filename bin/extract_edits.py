@@ -4,6 +4,10 @@ import sys, os
 import argparse
 import logging
 
+# it may be required if you have installed NLTK locally
+#import nltk.data
+# nltk.data.path.append('/home/user/.local/share/nltk_data')
+
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
 
 from wiki_edits.edits_extractor import EditsExtractor
@@ -40,7 +44,7 @@ def parse_arguments():
                         help="file with newer version of text")
     parser.add_argument("-t", "--tabify",
                         action='store_true',
-                        help="print output in OLD EDIT-TAB-NEW EDIT foramt")
+                        help="print output in OLD_EDIT-TAB-NEW_EDIT format")
     parser.add_argument("-l", "--log-level",
                         help="set log level")
     return parser.parse_args()

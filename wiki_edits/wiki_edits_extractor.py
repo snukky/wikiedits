@@ -3,9 +3,9 @@ from wiki_edits.edits_extractor import EditsExtractor
 
 
 class WikiEditsExtractor:
-    def __init__(self, filename):
+    def __init__(self, filename, **kwargs):
         self.revision = RevisionIterator(filename)
-        self.extractor = EditsExtractor()
+        self.extractor = EditsExtractor(**kwargs)
 
     def extract_edits(self):
         for old_text, new_text, info in self.__revision_pair():
