@@ -7,7 +7,8 @@ from wiki_edits.wiki.revision_iterator import RevisionIterator
 class RevisionIteratorTest(unittest.TestCase):
 
     def setUp(self):
-        dump_name = os.path.join(os.path.dirname(__file__), 
+        dump_name = os.path.join(os.path.dirname(__file__),
+                                 "data",
                                  "enwiki-20140102.tiny.xml.gz")
         self.dump = gzip.open(dump_name, "rb")
         self.rev = RevisionIterator(self.dump)

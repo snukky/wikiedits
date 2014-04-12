@@ -10,6 +10,7 @@ class WikiDumpParserTest(unittest.TestCase):
 
     def setUp(self):
         file_name = os.path.join(os.path.dirname(__file__), 
+                                 "data",
                                  "enwiki-20140102.tiny.xml.gz")
 
         dump = gzip.open(file_name, "rb")
