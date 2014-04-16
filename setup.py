@@ -2,7 +2,7 @@ from distutils.core import setup
 
 setup(
     name='WikiEdits',
-    version='0.1.0',
+    version='0.1.1',
     author='snukky',
     author_email='snk987@gmail.com',
     packages=['wikiedits'],
