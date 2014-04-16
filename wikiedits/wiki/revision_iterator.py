@@ -39,6 +39,9 @@ class RevisionIterator:
         yield (prev_rev, rev)
 
     def clean_markups(self, text):
+        if not text:
+            return ""
+
         clean_text = WikiExtractor.clean(text)
         clean_frags = WikiExtractor.compact(clean_text)
 
