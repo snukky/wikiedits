@@ -31,6 +31,9 @@ class EditsSelector:
 
         edits = []
         for old_sent, new_sent in self.__sentence_pairs(old_text, new_text):
+            old_sent = old_sent.strip()
+            new_sent = new_sent.strip()
+
             logger.debug("processing sentences:\n  > %s\n  > %s", 
                          old_sent, new_sent)
 

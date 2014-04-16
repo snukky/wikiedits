@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # you may need to change this path
-SCRIPT='./extract_wiki_edits.py --meta'
+SCRIPT='./extract_wiki_edits.py --meta --language polish'
 
 # check prerequisities
 if [ $# -ne 3 ]; then
@@ -36,7 +36,7 @@ EDIT_FILE="${EDITS_DIR}/${BASENAME}.txt"
 
 if [ ! -f $EDIT_FILE ]
 then
-  7za e -so ${DUMP_FILE} | ${SCRIPT} > ${EDIT_FILE}
+  7zr e -so ${DUMP_FILE} | ${SCRIPT} > ${EDIT_FILE}
 else
   echo "file with editions ${EDIT_FILE} exists"
 fi

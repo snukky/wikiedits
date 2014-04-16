@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
-import sys, os
+import sys
+import os
 import argparse
 import logging
 import yaml
@@ -39,7 +40,9 @@ def main():
                 print ""
 
 def format_meta_data(data):
-    lines = ["### %s" % line for line in yaml.dump(data).split('\n') if line]
+    lines = ["### %s" % line 
+             for line in yaml.dump(data, allow_unicode=True).split('\n') 
+             if line]
     return '\n'.join(lines)
 
 def parse_arguments():

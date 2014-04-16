@@ -4,24 +4,29 @@ from difflib import ndiff, restore
 class DiffFinder:
 
     def edited_fragments(self, old_frags, new_frags):
-        raw_diff = ndiff(old_frags, new_frags)
+        try:
+            raw_diff = ndiff(old_frags, new_frags)
+        except:
+            return []
 
         edits = []
         for edit in self.__diff_fragments(raw_diff):
             old_edit = '\n'.join(restore(edit, 1))
             new_edit = '\n'.join(restore(edit, 2))
             edits.append( (old_edit, new_edit) )
-
         return edits
 
     def edited_tokens(self, new_tokens, old_tokens):
-        raw_diff = ndiff(new_tokens, old_tokens)
+        try:
+            raw_diff = ndiff(new_tokens, old_tokens)
+        except:
+            return []
 
         edits = []
         for edit, start, end in self.__diff_tokens(raw_diff):
             old_edit = ' '.join(restore(edit, 1))
             new_edit = ' '.join(restore(edit, 2))
-            edits.append((old_edit, new_edit, start, end))
+            edits.append( (old_edit, new_edit, start, end) )
 
         return edits
     
