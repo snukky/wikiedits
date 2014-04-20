@@ -65,7 +65,10 @@ class DiffFinder:
         return indexes
 
     def __clean_diff(self, diff):
-        return [line for line in list(diff) if not line.startswith('?')]
+        try:
+            return [line for line in list(diff) if not line.startswith('?')]
+        except:
+            return []
 
     def __diff_actions(self, diffs):
         return ''.join([line[0] for line in diffs])
