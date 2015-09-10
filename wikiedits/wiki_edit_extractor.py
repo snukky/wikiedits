@@ -1,11 +1,11 @@
 from wiki.revision_iterator import RevisionIterator
-from wikiedits.edits_extractor import EditsExtractor
+from wikiedits.edit_extractor import EditExtractor
 
 
-class WikiEditsExtractor:
+class WikiEditExtractor:
     def __init__(self, filename, **kwargs):
         self.revision = RevisionIterator(filename, kwargs['lang'])
-        self.extractor = EditsExtractor(**kwargs)
+        self.extractor = EditExtractor(**kwargs)
 
     def extract_edits(self):
         for old_text, new_text, info in self.__revision_pair():

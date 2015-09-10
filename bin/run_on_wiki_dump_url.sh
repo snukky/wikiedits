@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # you may need to change this path
-SCRIPT='./extract_wiki_edits.py --meta --language polish'
+SCRIPT='./wiki_edits.py --meta --language polish'
 
 # check prerequisities
 if [ $# -ne 3 ]; then

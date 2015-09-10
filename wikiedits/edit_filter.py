@@ -5,10 +5,10 @@ import Levenshtein
 import math
 
 import logging
-logger = logging.getLogger(__name__)
+log = logging.getLogger(__name__)
 
 
-class EditsSelector:
+class EditFilter(object):
 
     def __init__(self, 
                  lang='english',
@@ -25,7 +25,7 @@ class EditsSelector:
         self.MAX_LENGTH_DIFF = length_diff              # on words
         self.MAX_LEVENSHTEIN_RATIO = edit_ratio         # on words
 
-    def select_edits(self, old_text, new_text):
+    def filter_edits(self, old_text, new_text):
         if not self.__looks_like_text_edition(old_text, new_text):
             return [] 
 
@@ -34,7 +34,7 @@ class EditsSelector:
             old_sent = old_sent.strip()
             new_sent = new_sent.strip()
 
-            logger.debug("processing sentences:\n  > %s\n  > %s", 
+            log.debug("processing sentences:\n  > %s\n  > %s", 
                          old_sent, new_sent)
 
             if self.__looks_like_sentence_edition(old_sent, new_sent):
@@ -42,24 +42,24 @@ class EditsSelector:
             else:
                 continue
         
-        logger.debug("got %i edited sentence(s)", len(edits))
+        log.debug("got %i edited sentence(s)", len(edits))
         return edits    
 
     def __looks_like_text_edition(self, old_text, new_text):
         if old_text == new_text:
-            logger.debug("texts are equal")
+            log.debug("texts are equal")
             return False
 
         if len(old_text) < self.MIN_TEXT_LENGTH \
                 or len(new_text) < self.MIN_TEXT_LENGTH:
-            logger.debug("either old or new text fragment is too short")
+            log.debug("either old or new text fragment is too short")
             return False
         
         return True
 
     def __looks_like_sentence_edition(self, old_sent, new_sent):
         if old_sent == new_sent:
-            logger.debug("sentences are equal")
+            log.debug("sentences are equal")
             return False
         
         # the number of words in a sentence is obtained by counting the number 
@@ -68,21 +68,21 @@ class EditsSelector:
         diff = abs(counts[0] - counts[1])
 
         if diff > self.MAX_LENGTH_DIFF:
-            logger.debug("too large difference in number of words %i", diff)
+            log.debug("too large difference in number of words %i", diff)
             return False
 
         if min(counts) < self.MIN_WORDS_IN_SENTENCE:
-            logger.debug("shorter sentence has too few words")
+            log.debug("shorter sentence has too few words")
             return False
 
         if max(counts) > self.MAX_WORDS_IN_SENTENCE:
-            logger.debug("longer sentence has too many words")
+            log.debug("longer sentence has too many words")
             return False
 
         ratio = self.__levenshtein_ratio(old_sent, new_sent)
 
         if ratio > self.MAX_LEVENSHTEIN_RATIO:
-            logger.debug("too high levensthein ratio %.2f", ratio)
+            log.debug("too high levensthein ratio %.2f", ratio)
             return False
 
         return True

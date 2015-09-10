@@ -1,6 +1,5 @@
-#  -*- coding: utf-8 -*-
-
 from wikiedits.wiki.wiki_dump_parser import WikiDumpParser
+from wikiedits.wiki import VANDALISM_REGEXES
 
 import WikiExtractor
 import re
@@ -8,14 +7,9 @@ import re
 
 class RevisionIterator:
 
-    VANDALISM_REGEXES = {
-      'english': "vandal|stupid|revert",
-      'polish': "anulowan|wycofan|cofnię|cofnie|przywróc|przywroc|revert|rewert"
-    }
-    
     def __init__(self, filename, lang='english'):
         self.dump = WikiDumpParser(filename)
-        self.vandalism_regex = re.compile(self.VANDALISM_REGEXES[lang], 
+        self.vandalism_regex = re.compile(VANDALISM_REGEXES[lang], 
                                           re.IGNORECASE)
 
     def adjacent_revisions(self):
