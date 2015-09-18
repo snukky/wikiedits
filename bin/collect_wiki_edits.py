@@ -16,7 +16,7 @@ def main():
 
     debug("working dir: {}".format(args.work_dir))
     if not os.path.exists(args.work_dir):
-        os.mkdirs(args.work_dir)
+        os.makedirs(args.work_dir)
 
     with open(args.dump_files) as files:
         for idx, file in enumerate(files):
@@ -30,7 +30,7 @@ def process_dump_file(file, work_dir, options):
     edit_file = os.path.join(work_dir, file_base + '.edits')
 
     if os.path.exists(edit_file):
-        debug("edit file {} exists".format(edit_file))
+        debug("edit file exists: {}".format(edit_file))
         return True
 
     if file.startswith('http') or file.startswith('dumps.wikimedia.org'):
@@ -39,7 +39,7 @@ def process_dump_file(file, work_dir, options):
         if not os.path.exists(download_file):
             os.popen("wget -nc -O {} {}".format(download_file, file))
         else:
-            debug("file {} exists")
+            debug("dump file exists: {}".format(download_file))
         file = download_file
 
     cmd = ''
@@ -56,9 +56,9 @@ def process_dump_file(file, work_dir, options):
     
     os.popen("{cat} {dump} | python {dir}/wiki_edits.py {opts} > {edits}" \
         .format(cat=cmd, dir=WIKIEDITS_DIR, opts=options, 
-                dump=file, edit=edit_file))
+                dump=file, edits=edit_file))
 
-    wc = os.popen("wc -l {}".format(edit_file)).read().strip()
+    wc = os.popen("wc -l {}".format(edit_file)).read().strip().split()[0]
     debug("edit file collected with {} lines".format(wc))
 
     return True
