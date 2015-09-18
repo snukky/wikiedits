@@ -2,10 +2,11 @@ Wiki Edits 2.0
 ==============
 
 A collection of scripts for automatic extraction of edited sentences from text
-edition histories, such as Wikipedia revisions. It was used to build the WikEd
-Error Corpus --- a corpus of corrective Wikipedia edits. 
+edition histories, such as Wikipedia revisions. It was used to create
+the [WikEd Error Corpus](http://romang.home.amu.edu.pl/wiked/wiked.html) --- a
+corpus of corrective Wikipedia edits:
 
-This is a new version of the library and it is *not compatible* with old
+This is a new version of the library and it is *not compatible* with the old
 version! See branch `oldversion` if you need older scripts.
 
 Requirements
@@ -17,6 +18,11 @@ Required python packages:
 
 - `nltk` with NLTK data _punkt_, see: http://www.nltk.org/
 - `Levenshtein`, see: https://pypi.python.org/pypi/python-Levenshtein/
+
+Optional packages:
+
+- `pyyaml`, see: http://pyyaml.org/
+- `joblib`, see: https://pypi.python.org/pypi/joblib
 - `nose`, see: https://nose.readthedocs.org/en/latest/
 
 Run tests by typing `nosetests` from main directory.
@@ -39,13 +45,12 @@ Example usage from main directory:
 
 And with Wikipedia dump file:
 
-    zcat tests/data/enwiki-20140102.tiny.xml.gz | ./wiki_edits.py
+    zcat tests/data/enwiki-20140102.tiny.xml.gz | ./bin/wiki_edits.py
 
-A bash script can be run to work with URL:
+The last script in the `bin` directory can be run with a list of dump files or
+URLs:
 
-    ./run_with_dump_url.sh /path/to/work/dir /path/to/dir/for/edits http://wiki.dump.7z
-
-For options see
+    ./bin/collect_wiki_edits.py -w /path/to/work/dir dumplist.txt
 
 Language-specific options
 -------------------------
