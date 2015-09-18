@@ -53,7 +53,7 @@ def process_dump_file(file, work_dir, options):
     cmd = ''
 
     if file_ext.startswith('.7z'):
-        cmd = "7zr e -so"
+        cmd = "7za e -so"
     elif file_ext.startswith('.xml'):
         cmd = "cat"
     elif file_ext.startswith('.gz'):
@@ -87,7 +87,7 @@ def parse_user_args():
                         help="directory for extracted edits")
     parser.add_argument("-e", "--extra-options", default=WIKIEDITS_OPTIONS,
                         help="extra options for script wiki_edits.py")
-    parser.add_argument("-j", "--jobs", default=JOBS,
+    parser.add_argument("-j", "--jobs", type=int, default=JOBS,
                         help="parallel jobs")
 
     args = parser.parse_args()
