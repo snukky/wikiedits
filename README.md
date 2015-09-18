@@ -6,8 +6,8 @@ edition histories, such as Wikipedia revisions. It was used to create
 the [WikEd Error Corpus](http://romang.home.amu.edu.pl/wiked/wiked.html) --- a
 corpus of corrective Wikipedia edits:
 
-This is a new version of the library and it is *not compatible* with the old
-version! See branch `oldversion` if you need older scripts.
+This is a new version of the library and it is **not compatible** with the old
+version! Back to commit 163d771 if you need old scripts.
 
 Requirements
 ------------
