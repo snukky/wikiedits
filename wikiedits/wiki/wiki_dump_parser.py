@@ -2,8 +2,6 @@ from lxml import etree
 import sys
 
 class WikiDumpParser:
-
-    TAG_PREFIX = '{http://www.mediawiki.org/xml/export-0.8/}'
     
     def __init__(self, filename):
         self.context = etree.iterparse(filename)
@@ -64,4 +62,4 @@ class WikiDumpParser:
         del self.context
         
     def __extract_tag(self, elem):
-        return elem.tag.split(self.TAG_PREFIX, 1)[1]
+        return elem.tag.rsplit('}', 1)[-1]
