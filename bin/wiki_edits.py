@@ -50,7 +50,7 @@ def parse_user_args():
         description="Extracts edited text fragments from Wikipedia revisions.",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
-    parser.add_argument("dump_file", default=sys.stdin, nargs="?",
+    parser.add_argument("dump_file", default="<STDIN>", nargs="?",
                         help="Wiki XML dump with complete edit history")
 
     parser.add_argument("-m", "--meta-data", action="store_true", 
@@ -75,7 +75,10 @@ def parse_user_args():
                        help="set maximum relative difference in edit " \
                             "distance")
 
-    return parser.parse_args()
+    args = parser.parse_args()
+    if args.dump_file == "<STDIN>":
+        args.dump_file = sys.stdin
+    return args
 
 def set_logging_level(log_level):
     if log_level is not None:
