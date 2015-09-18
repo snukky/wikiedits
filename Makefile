@@ -9,6 +9,7 @@ setup:
 	pip install python-Levenshtein
 	pip install pyyaml
 	pip install nose
+	pip install joblib
 
 test: 
 	nosetests
