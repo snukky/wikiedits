@@ -1,8 +1,13 @@
+# -*- coding: utf-8 -*-
+
 import re
+import sys
 from difflib import ndiff, restore
+import pprint
 
+# pp = pprint.PrettyPrinter(stream=sys.stderr)
 
-class DiffFinder:
+class DiffFinder(object):
 
     def edited_fragments(self, old_frags, new_frags):
         try:

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from wikiedits.diff_finder import DiffFinder
 
 import nltk.data
@@ -10,7 +12,7 @@ log = logging.getLogger(__name__)
 
 class EditFilter(object):
 
-    def __init__(self, 
+    def __init__(self,
                  lang='english',
                  min_words=3,
                  max_words=120,
@@ -27,23 +29,23 @@ class EditFilter(object):
 
     def filter_edits(self, old_text, new_text):
         if not self.__looks_like_text_edition(old_text, new_text):
-            return [] 
+            return []
 
         edits = []
         for old_sent, new_sent in self.__sentence_pairs(old_text, new_text):
             old_sent = old_sent.strip()
             new_sent = new_sent.strip()
 
-            log.debug("processing sentences:\n  > %s\n  > %s", 
+            log.debug("processing sentences:\n  > %s\n  > %s",
                          old_sent, new_sent)
 
             if self.__looks_like_sentence_edition(old_sent, new_sent):
                 edits.append((old_sent, new_sent))
             else:
                 continue
-        
+
         log.debug("got %i edited sentence(s)", len(edits))
-        return edits    
+        return edits
 
     def __looks_like_text_edition(self, old_text, new_text):
         if old_text == new_text:
@@ -54,15 +56,15 @@ class EditFilter(object):
                 or len(new_text) < self.MIN_TEXT_LENGTH:
             log.debug("either old or new text fragment is too short")
             return False
-        
+
         return True
 
     def __looks_like_sentence_edition(self, old_sent, new_sent):
         if old_sent == new_sent:
             log.debug("sentences are equal")
             return False
-        
-        # the number of words in a sentence is obtained by counting the number 
+
+        # the number of words in a sentence is obtained by counting the number
         # of spaces plus one
         counts = [old_sent.count(' ') + 1, new_sent.count(' ') + 1]
         diff = abs(counts[0] - counts[1])
@@ -90,7 +92,7 @@ class EditFilter(object):
     def __sentence_pairs(self, old_frag, new_frag):
         old_sents = self.__segmentize(old_frag)
         new_sents = self.__segmentize(new_frag)
-        
+
         min_size = min(len(old_sents), len(new_sents))
         for idx in range(min_size):
             yield (old_sents[idx], new_sents[idx])
@@ -99,7 +101,7 @@ class EditFilter(object):
         return [frag
                 for sent in self.segmenter.tokenize(text)
                 for frag in sent.split('; ')]
-    
+
     def __levenshtein_ratio(self, old_sent, new_sent):
         old_words = old_sent.split()
         new_words = new_sent.split()

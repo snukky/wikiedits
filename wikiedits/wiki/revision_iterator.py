@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from wikiedits.wiki.wiki_dump_parser import WikiDumpParser
 from wikiedits.wiki import VANDALISM_REGEXES
 
@@ -5,11 +7,11 @@ import WikiExtractor
 import re
 
 
-class RevisionIterator:
+class RevisionIterator(object):
 
     def __init__(self, filename, lang='english'):
         self.dump = WikiDumpParser(filename)
-        self.vandalism_regex = re.compile(VANDALISM_REGEXES[lang], 
+        self.vandalism_regex = re.compile(VANDALISM_REGEXES[lang],
                                           re.IGNORECASE)
 
     def adjacent_revisions(self):
@@ -23,7 +25,7 @@ class RevisionIterator:
 
             if prev_rev is not None and rev is not None:
                 yield (prev_rev, rev)
-            
+
             if rev is not None:
                 prev_rev = rev
 

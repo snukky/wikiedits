@@ -1,4 +1,5 @@
-#!/usr/bin/python
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 import sys
 import os
@@ -61,9 +62,9 @@ def process_dump_file(file, work_dir, options):
     else:
         debug("file extension {} not recognized!".format(file_ext))
         return False
-    
+
     os.popen("{cat} {dump} | python {dir}/wiki_edits.py {opts} > {edits}" \
-        .format(cat=cmd, dir=WIKIEDITS_DIR, opts=options, 
+        .format(cat=cmd, dir=WIKIEDITS_DIR, opts=options,
                 dump=file, edits=edit_file))
 
     wc = os.popen("wc -l {}".format(edit_file)).read().strip().split()[0]
