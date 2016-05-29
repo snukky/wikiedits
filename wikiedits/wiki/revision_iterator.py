@@ -6,6 +6,7 @@ from wikiedits.wiki import VANDALISM_REGEXES
 import WikiExtractor
 import re
 
+HTML_TAG_REGEX = r'<[^>]{1,20}?>'
 
 class RevisionIterator(object):
 
@@ -32,7 +33,8 @@ class RevisionIterator(object):
             next_rev['text'] = self.clean_markups(next_rev.get('text', ''))
             rev = next_rev
 
-        yield (prev_rev, rev)
+        if prev_rev is not None and rev is not None:
+            yield (prev_rev, rev)
 
     def clean_markups(self, text):
         if not text:
@@ -40,8 +42,10 @@ class RevisionIterator(object):
 
         clean_text = WikiExtractor.clean(text)
         clean_frags = WikiExtractor.compact(clean_text)
+        clean_html = [re.sub(HTML_TAG_REGEX, '', frag)
+                      for frag in clean_frags]
 
-        return "\n".join(clean_frags) if len(clean_frags) > 0 else ""
+        return "\n".join(clean_html) if len(clean_html) > 0 else ""
 
     def __is_revert_vandalism(self, comment):
         if type(comment) is str:
