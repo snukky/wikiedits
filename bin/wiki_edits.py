@@ -28,7 +28,8 @@ def main():
                              min_words=args.min_words,
                              max_words=args.max_words,
                              length_diff=args.length_diff,
-                             edit_ratio=args.edit_ratio)
+                             edit_ratio=args.edit_ratio,
+                             min_chars=args.min_chars)
 
     output = "{}\t{}" if args.tabify else "{}\n{}\n"
 
@@ -58,6 +59,8 @@ def parse_user_args():
                         help="add revision meta data like comment, user, etc.")
     parser.add_argument("-t", "--tabify", action='store_true',
                         help="print output in OLD_EDIT-TAB-NEW_EDIT format")
+    # parser.add_argument("-s", "--scores", action='store_true',
+                        # help="add scores; require --tabify")
     parser.add_argument("--debug", action="store_true",
                         help="turn on debug mode")
 
@@ -65,6 +68,9 @@ def parse_user_args():
     group.add_argument("-l", "--language", default="english",
                        help="specify language of NLTK sentence splitter",
                        choices=LANGUAGES)
+    group.add_argument("--min-chars", type=int, default=10,
+                       help="set the minimum number of characters in a " \
+                            "sentence")
     group.add_argument("--min-words", type=int, default=2,
                        help="set minimum length of sentence in words")
     group.add_argument("--max-words", type=int, default=120,

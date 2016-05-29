@@ -17,17 +17,19 @@ class EditFilter(object):
                  min_words=3,
                  max_words=120,
                  length_diff=4,
-                 edit_ratio=0.3):
+                 edit_ratio=0.3,
+                 min_chars=10):
 
         self.segmenter = nltk.data.load('tokenizers/punkt/%s.pickle' % lang)
 
-        self.MIN_TEXT_LENGTH = 10                       # in characters
+        self.MIN_TEXT_LENGTH = min_chars                # in characters
         self.MIN_WORDS_IN_SENTENCE = min_words          # in words
         self.MAX_WORDS_IN_SENTENCE = max_words          # in words
         self.MAX_LENGTH_DIFF = length_diff              # on words
         self.MAX_LEVENSHTEIN_RATIO = edit_ratio         # on words
 
     def filter_edits(self, old_text, new_text):
+        log.debug("processing texts:\n  >>> %s\n  >>> %s", old_text, new_text)
         if not self.__looks_like_text_edition(old_text, new_text):
             return []
 
@@ -36,18 +38,22 @@ class EditFilter(object):
             old_sent = old_sent.strip()
             new_sent = new_sent.strip()
 
-            log.debug("processing sentences:\n  > %s\n  > %s",
-                         old_sent, new_sent)
+            log.info("processing sentences:\n  > %s\n  > %s",
+                old_sent, new_sent)
 
             if self.__looks_like_sentence_edition(old_sent, new_sent):
                 edits.append((old_sent, new_sent))
             else:
                 continue
 
-        log.debug("got %i edited sentence(s)", len(edits))
+        log.info("got %i edited sentence(s)", len(edits))
         return edits
 
     def __looks_like_text_edition(self, old_text, new_text):
+        if not old_text or not new_text:
+            log.debug("either old or new text fragment is empty")
+            return False
+
         if old_text == new_text:
             log.debug("texts are equal")
             return False
@@ -61,7 +67,7 @@ class EditFilter(object):
 
     def __looks_like_sentence_edition(self, old_sent, new_sent):
         if old_sent == new_sent:
-            log.debug("sentences are equal")
+            log.info("sentences are equal")
             return False
 
         # the number of words in a sentence is obtained by counting the number
@@ -70,21 +76,21 @@ class EditFilter(object):
         diff = abs(counts[0] - counts[1])
 
         if diff > self.MAX_LENGTH_DIFF:
-            log.debug("too large difference in number of words %i", diff)
+            log.info("too large difference in number of words %i", diff)
             return False
 
         if min(counts) < self.MIN_WORDS_IN_SENTENCE:
-            log.debug("shorter sentence has too few words")
+            log.info("shorter sentence has too few words")
             return False
 
         if max(counts) > self.MAX_WORDS_IN_SENTENCE:
-            log.debug("longer sentence has too many words")
+            log.info("longer sentence has too many words")
             return False
 
         ratio = self.__levenshtein_ratio(old_sent, new_sent)
 
         if ratio > self.MAX_LEVENSHTEIN_RATIO:
-            log.debug("too high levensthein ratio %.2f", ratio)
+            log.info("too high levensthein ratio %.2f", ratio)
             return False
 
         return True
@@ -95,7 +101,8 @@ class EditFilter(object):
 
         min_size = min(len(old_sents), len(new_sents))
         for idx in range(min_size):
-            yield (old_sents[idx], new_sents[idx])
+            yield (' '.join(old_sents[idx].split()),
+                   ' '.join(new_sents[idx].split()))
 
     def __segmentize(self, text):
         return [frag
