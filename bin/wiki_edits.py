@@ -31,15 +31,25 @@ def main():
                              edit_ratio=args.edit_ratio,
                              min_chars=args.min_chars)
 
-    output = "{}\t{}" if args.tabify else "{}\n{}\n"
+    if args.tabify:
+        output = "{old}\t{new}"
+        if args.scores:
+            output += "\t{dist}\t{ratio}"
+    else:
+        output = "{old}\n{new}\n"
+        if args.scores:
+            output = "### scores: {{dist: {dist}, ratio: {ratio}}}\n" \
+                   + output
 
     for edits, meta in wiki.extract_edits():
         if args.meta_data and edits:
             print format_meta_data(meta)
 
-        for (old_edit, new_edit) in edits:
-            print output.format(old_edit.encode('utf-8'),
-                                new_edit.encode('utf-8'))
+        for (old_edit, new_edit, scores) in edits:
+            print output.format(old=old_edit.encode('utf-8'),
+                                new=new_edit.encode('utf-8'),
+                                ratio=scores[0],
+                                dist=scores[1])
 
 def format_meta_data(data):
     lines = ["### %s" % line
@@ -59,8 +69,8 @@ def parse_user_args():
                         help="add revision meta data like comment, user, etc.")
     parser.add_argument("-t", "--tabify", action='store_true',
                         help="print output in OLD_EDIT-TAB-NEW_EDIT format")
-    # parser.add_argument("-s", "--scores", action='store_true',
-                        # help="add scores; require --tabify")
+    parser.add_argument("-s", "--scores", action='store_true',
+                        help="add levenshtein-based scores; require --tabify")
     parser.add_argument("--debug", action="store_true",
                         help="turn on debug mode")
 

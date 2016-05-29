@@ -17,7 +17,7 @@ from wikiedits import LANGUAGES
 def main():
     args = parse_user_args()
 
-    if args.debug: 
+    if args.debug:
         set_logging_level('debug')
 
     with open(args.old_text) as file:
@@ -31,10 +31,18 @@ def main():
                           length_diff=args.length_diff,
                           edit_ratio=args.edit_ratio)
 
-    output = "{}\t{}" if args.tabify else "{}\n{}\n"
+    if args.tabify:
+        output = "{old}\t{new}"
+        if args.scores:
+            output += "\t{dist}\t{ratio}"
+    else:
+        output = "{old}\n{new}\n"
+        if args.scores:
+            output += "{dist} {ratio}\n"
 
-    for old_edit, new_edit in edits.extract_edits(old_text, new_text):
-        print output.format(old_edit, new_edit)
+    for old_edit, new_edit, scores in edits.extract_edits(old_text, new_text):
+        print output.format(old=old_edit, new=new_edit,
+                            ratio=scores[0], dist=scores[1])
 
 def parse_user_args():
     parser = argparse.ArgumentParser(
@@ -46,8 +54,10 @@ def parse_user_args():
     parser.add_argument("new_text", help="newer version of text")
 
     parser.add_argument("-t", "--tabify", action='store_true',
-                        help="print output in OLD_EDIT-TAB-NEW_EDIT format")
-    parser.add_argument("--debug", action="store_true", 
+                        help="print output in OLDEDIT-TAB-NEWEDIT format")
+    parser.add_argument("-s", "--scores", action='store_true',
+                        help="add levenshtein-based scores")
+    parser.add_argument("--debug", action="store_true",
                         help="turn on debug mode")
 
     group = parser.add_argument_group("selection options")

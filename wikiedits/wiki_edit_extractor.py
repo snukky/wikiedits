@@ -10,10 +10,10 @@ class WikiEditExtractor(object):
         self.extractor = EditExtractor(**kwargs)
 
     def extract_edits(self):
-        for old_text, new_text, info in self.__revision_pair():
+        for old_text, new_text, meta in self.__revision_pair():
             edits = self.extractor.extract_edits(old_text, new_text)
             if edits:
-                yield (edits, info)
+                yield (edits, meta)
 
     def __revision_pair(self):
         for old_rev, new_rev in self.revision.adjacent_revisions():

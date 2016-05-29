@@ -22,6 +22,8 @@ class EditFilter(object):
 
         self.segmenter = nltk.data.load('tokenizers/punkt/%s.pickle' % lang)
 
+        self.LEVENSHTEIN_RATIO_LOG_BASE = 20
+
         self.MIN_TEXT_LENGTH = min_chars                # in characters
         self.MIN_WORDS_IN_SENTENCE = min_words          # in words
         self.MAX_WORDS_IN_SENTENCE = max_words          # in words
@@ -41,10 +43,10 @@ class EditFilter(object):
             log.info("processing sentences:\n  > %s\n  > %s",
                 old_sent, new_sent)
 
-            if self.__looks_like_sentence_edition(old_sent, new_sent):
-                edits.append((old_sent, new_sent))
-            else:
+            scores = self.__looks_like_sentence_edition(old_sent, new_sent)
+            if not scores:
                 continue
+            edits.append((old_sent, new_sent, scores))
 
         log.info("got %i edited sentence(s)", len(edits))
         return edits
@@ -87,13 +89,13 @@ class EditFilter(object):
             log.info("longer sentence has too many words")
             return False
 
-        ratio = self.__levenshtein_ratio(old_sent, new_sent)
+        ratio, dist = self.__levenshtein_ratio(old_sent, new_sent)
 
         if ratio > self.MAX_LEVENSHTEIN_RATIO:
             log.info("too high levensthein ratio %.2f", ratio)
             return False
 
-        return True
+        return (ratio, dist)
 
     def __sentence_pairs(self, old_frag, new_frag):
         old_sents = self.__segmentize(old_frag)
@@ -115,8 +117,10 @@ class EditFilter(object):
 
         min_words = min(len(old_words), len(new_words))
         dist = self.__levenshtein_on_words(old_words, new_words)
+        ratio = dist / float(min_words) * math.log(min_words,
+            self.LEVENSHTEIN_RATIO_LOG_BASE)
 
-        return dist / float(min_words) * math.log(min_words, 20)
+        return (ratio, dist)
 
     def __levenshtein_on_words(self, words1, words2):
         char = 32   # 32 + 33 = 'A'
