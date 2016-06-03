@@ -23,7 +23,7 @@ def main():
     if args.debug:
         set_logging_level('debug')
 
-    wiki = WikiEditExtractor(args.dump_file or sys.stdin,
+    wiki = WikiEditExtractor(args.input or sys.stdin,
                              lang=args.language,
                              min_words=args.min_words,
                              max_words=args.max_words,
@@ -32,24 +32,31 @@ def main():
                              min_chars=args.min_chars)
 
     if args.tabify:
-        output = "{old}\t{new}"
+        output = "{old}\t{new}\n"
         if args.scores:
-            output += "\t{dist}\t{ratio}"
+            output += "\t{dist}\t{ratio}\n"
     else:
-        output = "{old}\n{new}\n"
+        output = "{old}\n{new}\n\n"
         if args.scores:
             output = "### scores: {{dist: {dist}, ratio: {ratio}}}\n" \
                    + output
 
+    out = args.output
+    if args.output != sys.stdout:
+        out = open(args.output, 'w')
+
     for edits, meta in wiki.extract_edits():
         if args.meta_data and edits:
-            print format_meta_data(meta)
+            out.write(format_meta_data(meta) + "\n")
 
         for (old_edit, new_edit, scores) in edits:
-            print output.format(old=old_edit.encode('utf-8'),
-                                new=new_edit.encode('utf-8'),
-                                ratio=scores[0],
-                                dist=scores[1])
+            out.write(output.format(old=old_edit.encode('utf-8'),
+                      new=new_edit.encode('utf-8'),
+                      ratio=scores[0],
+                      dist=scores[1]))
+
+    if args.output != sys.stdout:
+        out.close()
 
 def format_meta_data(data):
     lines = ["### %s" % line
@@ -62,8 +69,10 @@ def parse_user_args():
         description="Extracts edited text fragments from Wikipedia revisions.",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
-    parser.add_argument("dump_file", default="<STDIN>", nargs="?",
+    parser.add_argument("input", default="<STDIN>", nargs="?",
                         help="Wiki XML dump with complete edit history")
+    parser.add_argument("output", default="<STDOUT>", nargs="?",
+                        help="File for extracted editions")
 
     parser.add_argument("-m", "--meta-data", action="store_true",
                         help="add revision meta data like comment, user, etc.")
@@ -93,8 +102,10 @@ def parse_user_args():
                             "distance")
 
     args = parser.parse_args()
-    if args.dump_file == "<STDIN>":
-        args.dump_file = sys.stdin
+    if args.input == "<STDIN>":
+        args.input = sys.stdin
+    if args.output == "<STDOUT>":
+        args.output = sys.stdout
     return args
 
 def set_logging_level(log_level):
