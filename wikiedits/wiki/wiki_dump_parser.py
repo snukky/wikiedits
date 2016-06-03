@@ -54,14 +54,18 @@ class WikiDumpParser(object):
         High-performance XML parsing with lxml, see:
         http://www.ibm.com/developerworks/xml/library/x-hiperfparse/
         """
-        for event, elem in self.context:
-            if event == 'end':
-                yield elem
+        try:
+            for event, elem in self.context:
+                if event == 'end':
+                    yield elem
 
-            elem.clear()
-            while elem.getprevious() is not None:
-                del elem.getparent()[0]
-        del self.context
+                elem.clear()
+                while elem.getprevious() is not None:
+                    del elem.getparent()[0]
+        except:
+            print >>sys.stderr, "Iteration stopped: lxml exception handled"
+        finally:
+            del self.context
 
     def __extract_tag(self, elem):
         return elem.tag.rsplit('}', 1)[-1]
