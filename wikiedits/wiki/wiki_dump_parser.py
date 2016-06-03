@@ -62,8 +62,9 @@ class WikiDumpParser(object):
                 elem.clear()
                 while elem.getprevious() is not None:
                     del elem.getparent()[0]
-        except:
-            print >>sys.stderr, "Iteration stopped: lxml exception handled"
+        except etree.LxmlError as ex:
+            print >>sys.stderr, "Iteration stopped due to lxml exception: {}" \
+                .format(ex)
         finally:
             del self.context
 
