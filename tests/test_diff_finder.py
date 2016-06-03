@@ -11,7 +11,7 @@ class DiffFinderTest(unittest.TestCase):
         new_text = "a b b c D e f".split(' ')
 
         edits = self.diff.edited_fragments(old_text, new_text)
-        
+
         self.assertEqual(1, len(edits))
         self.assertEqual(("d","D"), edits[0])
 

@@ -5,11 +5,11 @@ from wikiedits.wiki.wiki_dump_parser import WikiDumpParser
 
 
 class WikiDumpParserTest(unittest.TestCase):
-    
+
     WIKI_TEMP_FILE = "enwiki.temp.xml"
 
     def setUp(self):
-        file_name = os.path.join(os.path.dirname(__file__), 
+        file_name = os.path.join(os.path.dirname(__file__),
                                  "data",
                                  "enwiki-20140102.tiny.xml.gz")
 
@@ -17,7 +17,7 @@ class WikiDumpParserTest(unittest.TestCase):
         with open(self.WIKI_TEMP_FILE, "w") as file:
             file.write(dump.read())
         dump.close()
-        
+
         self.parser = WikiDumpParser(self.WIKI_TEMP_FILE)
 
     def tearDown(self):

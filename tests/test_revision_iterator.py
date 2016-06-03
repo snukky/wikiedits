@@ -18,14 +18,14 @@ class RevisionIteratorTest(unittest.TestCase):
 
     def test_adjacent_revisions(self):
         revisions = self.rev.adjacent_revisions()
-        
-        rev1, rev2 = next(revisions) 
+
+        rev1, rev2 = next(revisions)
         self.assertTrue('text' in rev1)
         self.assertTrue('text' in rev2)
 
-        rev3, rev4 = next(revisions) 
+        rev3, rev4 = next(revisions)
         self.assertEqual(rev2['id'], rev3['id'])
-        
+
 
 def main():
     unittest.main()
