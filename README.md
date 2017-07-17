@@ -2,15 +2,38 @@ Wiki Edits 2.0
 ==============
 
 A collection of scripts for automatic extraction of edited sentences from text
-edition histories, such as Wikipedia revisions. It was used to create
-the [WikEd Error Corpus](http://romang.home.amu.edu.pl/wiked/wiked.html) --- a
-corpus of corrective Wikipedia edits:
+edition histories, such as Wikipedia revisions. It was used to create the WikEd
+Error Corpus --- a corpus of corrective Wikipedia edits published in:
 
-This is a new version of the library and it is **not compatible** with the old
-version! Back to commit 163d771 if you need old scripts.
+    @inproceedings{wiked2014,
+        author = {Roman Grundkiewicz and Marcin Junczys-Dowmunt},
+        title = {The WikEd Error Corpus: A Corpus of Corrective Wikipedia Edits and its Application to Grammatical Error Correction},
+        booktitle = {Advances in Natural Language Processing -- Lecture Notes in Computer Science},
+        editor = {Adam Przepiórkowski and Maciej Ogrodniczuk},
+        publisher = {Springer},
+        year = {2014},
+        volume = {8686},
+        pages = {478--490},
+        url = {http://emjotde.github.io/publications/pdf/mjd.poltal2014.draft.pdf}
+    }
+
+WikEd Error Corpus
+------------------
+
+The corpus has been prepared for two languages:
+
+* English: [wiked-v1.0.en.tgz](http://data.statmt.org/romang/wiked/wiked-v1.0.en.tgz), 4.2 GB
+* English, cleaned & preprocessed: [wiked-v1.0.en.prepro.tgz](http://data.statmt.org/romang/wiked/wiked-v1.0.en.prepro.tgz), 2.0 GB
+* Polish: [wiked-v1.0.pl.tgz](http://data.statmt.org/romang/wiked/wiked-v1.0.pl.tgz), 301 MB
+
+The repository contains some useful conversion scripts for the WikEd, which
+work independently from Wiki Edits. These can be found in `bin` directory.
 
 Requirements
 ------------
+
+This is a new version of the library and it is **not compatible** with the old
+version! Back to commit 163d771 if you need old scripts.
 
 This package is tested on Ubuntu with Python 2.7.
 
@@ -56,9 +79,9 @@ Language-specific options
 -------------------------
 
 All scripts are mostly language-independent. A few components need to be
-checked or updated to run these scripts for non-English languages:
+updated to run the scripts for non-English languages:
 
-- model for NLTK _punkt_ tokenizer, 
+- model for NLTK _punkt_ tokenizer,
   see: https://github.com/nltk/nltk_data/tree/gh-pages
 - regular expressions for filtering reverted revisions,
   see file: `wikiedits/wiki/__init__.py`
