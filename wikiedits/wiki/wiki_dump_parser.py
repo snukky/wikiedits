@@ -19,9 +19,9 @@ class WikiDumpParser(object):
             tag = self.__extract_tag(elem)
 
             if tag == 'id':
-                if not revision: # page id
+                if 'id' not in page: # page id
                     page['id'] = elem.text
-                if tag not in revision: # revision id
+                elif 'id' not in revision: # revision id
                     revision['id'] = elem.text
                 else: # user id
                     contributor['id'] = elem.text
