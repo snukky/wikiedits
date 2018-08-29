@@ -33,7 +33,8 @@ def main():
     new_text = new_text.readlines()
     
     for loopvar in tqdm(range(0,len(old_text),batch_size)):
-        old_text_batch = " ".join(line.rstrip() for line in old_text[loopvar:loopvar+batch_size])
+        # Split into batches of sentences
+        old_text_batch = " ".join(line.rstrip() for line in old_text[loopvar:loopvar+batch_size]) 
         new_text_batch = " ".join(line.rstrip() for line in new_text[loopvar:loopvar+batch_size])
         edits = EditExtractor(lang=args.language,
                           min_words=args.min_words,
@@ -50,6 +51,9 @@ def main():
                 output += "{dist} {ratio}\n"
         for old_edit, new_edit, scores in edits.extract_edits(old_text_batch, new_text_batch):
             print output.format(old=old_edit, new=new_edit,ratio=scores[0], dist=scores[1])
+    old_text.close()
+    new_text.close()
+
 
 def parse_user_args():
     parser = argparse.ArgumentParser(
