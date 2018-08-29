@@ -9,5 +9,5 @@ setup(
     scripts=['bin/txt_edits.py', 'bin/wiki_edits.py'],
     license='LICENSE.txt',
     description='Automatic extraction of edited sentences from text edition histories.',
-    long_description=open('README.txt').read(),
+    long_description=open('README.md').read(),
 )
