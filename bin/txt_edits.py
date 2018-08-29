@@ -3,15 +3,22 @@
 import sys, os
 import argparse
 import logging
-
+from tqdm import tqdm
 # it may be required if you have installed NLTK locally
-#import nltk.data
-#nltk.data.path.append('$HOME/nltk_data')
+import nltk.data
+nltk.data.path.append('$HOME/nltk_data')
 
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
 
 from wikiedits.edit_extractor import EditExtractor
 from wikiedits import LANGUAGES
+interval = 10
+
+def set_loging_level(log_level):
+    if log_level is not None:
+        numeric_level = getattr(logging, log_level.upper(), None)
+        logging.basicConfig(level=numeric_level)
+
 
 
 def main():
@@ -20,29 +27,29 @@ def main():
     if args.debug:
         set_logging_level('debug')
 
-    with open(args.old_text) as file:
-        old_text = " ".join(line.rstrip() for line in file.readlines())
-    with open(args.new_text) as file:
-        new_text = " ".join(line.rstrip() for line in file.readlines())
-
-    edits = EditExtractor(lang=args.language,
+    old_text = open(args.old_text,'r')
+    new_text = open(args.new_text,'r')
+    old_text = old_text.readlines()
+    new_text = new_text.readlines()
+    
+    for loopvar in tqdm(range(0,len(old_text),interval)):
+        old_text_batch = " ".join(line.rstrip() for line in old_text[loopvar:loopvar+interval])
+        new_text_batch = " ".join(line.rstrip() for line in new_text[loopvar:loopvar+interval])
+        edits = EditExtractor(lang=args.language,
                           min_words=args.min_words,
                           max_words=args.max_words,
                           length_diff=args.length_diff,
                           edit_ratio=args.edit_ratio)
-
-    if args.tabify:
-        output = "{old}\t{new}"
-        if args.scores:
-            output += "\t{dist}\t{ratio}"
-    else:
-        output = "{old}\n{new}\n"
-        if args.scores:
-            output += "{dist} {ratio}\n"
-
-    for old_edit, new_edit, scores in edits.extract_edits(old_text, new_text):
-        print output.format(old=old_edit, new=new_edit,
-                            ratio=scores[0], dist=scores[1])
+        if args.tabify:
+            output = "{old}\t{new}"
+            if args.scores:
+                output += "\t{dist}\t{ratio}"
+        else:
+            output = "{old}\n{new}\n"
+            if args.scores:
+                output += "{dist} {ratio}\n"
+        for old_edit, new_edit, scores in edits.extract_edits(old_text_batch, new_text_batch):
+            print output.format(old=old_edit, new=new_edit,ratio=scores[0], dist=scores[1])
 
 def parse_user_args():
     parser = argparse.ArgumentParser(
@@ -77,10 +84,6 @@ def parse_user_args():
 
     return parser.parse_args()
 
-def set_loging_level(log_level):
-    if log_level is not None:
-        numeric_level = getattr(logging, log_level.upper(), None)
-        logging.basicConfig(level=numeric_level)
 
 
 if __name__ == "__main__":
