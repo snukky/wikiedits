@@ -12,7 +12,7 @@ sys.path.insert(1, os.path.join(sys.path[0], '..'))
 
 from wikiedits.edit_extractor import EditExtractor
 from wikiedits import LANGUAGES
-interval = 10
+batch_size = 10
 
 def set_loging_level(log_level):
     if log_level is not None:
@@ -32,9 +32,9 @@ def main():
     old_text = old_text.readlines()
     new_text = new_text.readlines()
     
-    for loopvar in tqdm(range(0,len(old_text),interval)):
-        old_text_batch = " ".join(line.rstrip() for line in old_text[loopvar:loopvar+interval])
-        new_text_batch = " ".join(line.rstrip() for line in new_text[loopvar:loopvar+interval])
+    for loopvar in tqdm(range(0,len(old_text),batch_size)):
+        old_text_batch = " ".join(line.rstrip() for line in old_text[loopvar:loopvar+batch_size])
+        new_text_batch = " ".join(line.rstrip() for line in new_text[loopvar:loopvar+batch_size])
         edits = EditExtractor(lang=args.language,
                           min_words=args.min_words,
                           max_words=args.max_words,
