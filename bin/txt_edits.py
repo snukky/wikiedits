@@ -27,8 +27,8 @@ def main():
     if args.debug:
         set_logging_level('debug')
 
-    old_text_file = open(args.old_text,'r')
-    new_text_file = open(args.new_text,'r')
+    old_text_file = open(args.old_text_file,'r')
+    new_text_file = open(args.new_text_file,'r')
     old_text = old_text_file.readlines()
     new_text = new_text_file.readlines()
     
@@ -61,8 +61,8 @@ def parse_user_args():
                     "of the same text.",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
-    parser.add_argument("old_text", help="older version of text")
-    parser.add_argument("new_text", help="newer version of text")
+    parser.add_argument("old_text_file", help="older version of text")
+    parser.add_argument("new_text_file", help="newer version of text")
 
     parser.add_argument("-t", "--tabify", action='store_true',
                         help="print output in OLDEDIT-TAB-NEWEDIT format")
