@@ -27,10 +27,10 @@ def main():
     if args.debug:
         set_logging_level('debug')
 
-    old_text = open(args.old_text,'r')
-    new_text = open(args.new_text,'r')
-    old_text = old_text.readlines()
-    new_text = new_text.readlines()
+    old_text_file = open(args.old_text,'r')
+    new_text_file = open(args.new_text,'r')
+    old_text = old_text_file.readlines()
+    new_text = new_text_file.readlines()
     
     for loopvar in tqdm(range(0,len(old_text),batch_size)):
         # Split into batches of sentences
@@ -51,8 +51,8 @@ def main():
                 output += "{dist} {ratio}\n"
         for old_edit, new_edit, scores in edits.extract_edits(old_text_batch, new_text_batch):
             print output.format(old=old_edit, new=new_edit,ratio=scores[0], dist=scores[1])
-    old_text.close()
-    new_text.close()
+    old_text_file.close()
+    new_text_file.close()
 
 
 def parse_user_args():
