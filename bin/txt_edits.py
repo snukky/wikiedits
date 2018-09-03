@@ -14,12 +14,6 @@ from wikiedits.edit_extractor import EditExtractor
 from wikiedits import LANGUAGES
 batch_size = 10
 
-def set_loging_level(log_level):
-    if log_level is not None:
-        numeric_level = getattr(logging, log_level.upper(), None)
-        logging.basicConfig(level=numeric_level)
-
-
 
 def main():
     args = parse_user_args()
@@ -31,16 +25,16 @@ def main():
     new_text_file = open(args.new_text_file,'r')
     old_text = old_text_file.readlines()
     new_text = new_text_file.readlines()
-    
+
     for loopvar in tqdm(range(0,len(old_text),batch_size)):
         # Split into batches of sentences
-        old_text_batch = " ".join(line.rstrip() for line in old_text[loopvar:loopvar+batch_size]) 
+        old_text_batch = " ".join(line.rstrip() for line in old_text[loopvar:loopvar+batch_size])
         new_text_batch = " ".join(line.rstrip() for line in new_text[loopvar:loopvar+batch_size])
         edits = EditExtractor(lang=args.language,
-                          min_words=args.min_words,
-                          max_words=args.max_words,
-                          length_diff=args.length_diff,
-                          edit_ratio=args.edit_ratio)
+                              min_words=args.min_words,
+                              max_words=args.max_words,
+                              length_diff=args.length_diff,
+                              edit_ratio=args.edit_ratio)
         if args.tabify:
             output = "{old}\t{new}"
             if args.scores:
@@ -53,6 +47,12 @@ def main():
             print output.format(old=old_edit, new=new_edit,ratio=scores[0], dist=scores[1])
     old_text_file.close()
     new_text_file.close()
+
+
+def set_loging_level(log_level):
+    if log_level is not None:
+        numeric_level = getattr(logging, log_level.upper(), None)
+        logging.basicConfig(level=numeric_level)
 
 
 def parse_user_args():
