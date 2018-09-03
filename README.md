@@ -26,13 +26,13 @@ The corpus has been prepared for two languages:
 * English, cleaned & preprocessed: [wiked-v1.0.en.prepro.tgz](http://data.statmt.org/romang/wiked/wiked-v1.0.en.prepro.tgz), 2.0 GB
 * Polish: [wiked-v1.0.pl.tgz](http://data.statmt.org/romang/wiked/wiked-v1.0.pl.tgz), 301 MB
 
-The repository contains some useful conversion scripts for the WikEd, which
-work independently from Wiki Edits. These can be found in `bin` directory.
+The repository also includes format conversion scripts for WikEd. The scripts
+work independently form Wiki Edits and can be found in the `bin` directory.
 
 Requirements
 ------------
 
-This is a new version of the library and it is **not compatible** with the old
+This is a new version of Wiki Edits and it is **not compatible** with the old
 version! Back to commit 163d771 if you need old scripts.
 
 This package is tested on Ubuntu with Python 2.7.
@@ -54,7 +54,7 @@ Installation
 ------------
 
 Installation of all requirements is possible via Makefile if you have `pip`
-installed:
+already installed:
 
     sudo apt-get install python-pip
     sudo make all
@@ -62,16 +62,15 @@ installed:
 Usage
 -----
 
-Example usage from main directory:
+To extract edits from parallel texts:
 
     ./bin/txt_edits.py tests/data/lorem_ipsum.old.txt tests/data/lorem_ipsum.new.txt
 
-And with Wikipedia dump file:
+And from a Wikipedia dump file:
 
     zcat tests/data/enwiki-20140102.tiny.xml.gz | ./bin/wiki_edits.py
 
-The last script in the `bin` directory can be run with a list of dump files or
-URLs:
+The last script extracts edits from a list of dump files or URLs:
 
     ./bin/collect_wiki_edits.py -w /path/to/work/dir dumplist.txt
 
@@ -83,9 +82,8 @@ updated to run the scripts for non-English languages:
 
 - model for NLTK _punkt_ tokenizer,
   see: https://github.com/nltk/nltk_data/tree/gh-pages
-- regular expressions for filtering reverted revisions,
-  see file: `wikiedits/wiki/__init__.py`
-- list of supported languages,
-  see file: `wikiedits/__init__.py`
+- regular expressions for filtering reverted revisions in file:
+  `wikiedits/wiki/__init__.py`
+- list of supported languages in file: `wikiedits/__init__.py`
 
-Currently supported languages: English, Polish.
+Currently supported languages: English, Polish, German.
