@@ -3,6 +3,7 @@
 from lxml import etree
 import sys
 
+
 class WikiDumpParser(object):
 
     def __init__(self, filename):
@@ -19,11 +20,11 @@ class WikiDumpParser(object):
             tag = self.__extract_tag(elem)
 
             if tag == 'id':
-                if 'id' not in page: # page id
+                if 'id' not in page:  # page id
                     page['id'] = elem.text
-                elif 'id' not in revision: # revision id
+                elif 'id' not in revision:  # revision id
                     revision['id'] = elem.text
-                else: # user id
+                else:  # user id
                     contributor['id'] = elem.text
 
             elif tag in ['username', 'ip']:
@@ -63,8 +64,8 @@ class WikiDumpParser(object):
                 while elem.getprevious() is not None:
                     del elem.getparent()[0]
         except etree.LxmlError as ex:
-            print("Iteration stopped due to lxml exception: {}" \
-                .format(ex), file=sys.stderr)
+            print("Iteration stopped due to lxml exception: {}"
+                  .format(ex), file=sys.stderr)
         finally:
             del self.context
 

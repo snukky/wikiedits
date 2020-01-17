@@ -7,6 +7,7 @@ import pprint
 
 # pp = pprint.PrettyPrinter(stream=sys.stderr)
 
+
 class DiffFinder(object):
 
     def edited_fragments(self, old_frags, new_frags):
@@ -19,7 +20,7 @@ class DiffFinder(object):
         for edit in self.__diff_fragments(raw_diff):
             old_edit = '\n'.join(restore(edit, 1))
             new_edit = '\n'.join(restore(edit, 2))
-            edits.append( (old_edit, new_edit) )
+            edits.append((old_edit, new_edit))
         return edits
 
     def __diff_fragments(self, raw_diff):

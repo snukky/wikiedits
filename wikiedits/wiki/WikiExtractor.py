@@ -57,7 +57,9 @@ Options:
 import sys
 import gc
 import getopt
-import urllib.request, urllib.parse, urllib.error
+import urllib.request
+import urllib.parse
+import urllib.error
 import re
 import bz2
 import os.path
@@ -90,17 +92,17 @@ acceptedNamespaces = set(['w', 'wiktionary', 'wikt'])
 # Drop these elements from article text
 #
 discardElements = set([
-        'gallery', 'timeline', 'noinclude', 'pre',
-        'table', 'tr', 'td', 'th', 'caption',
-        'form', 'input', 'select', 'option', 'textarea',
-        'ul', 'li', 'ol', 'dl', 'dt', 'dd', 'menu', 'dir',
-        'ref', 'references', 'img', 'imagemap', 'source'
-        ])
+    'gallery', 'timeline', 'noinclude', 'pre',
+    'table', 'tr', 'td', 'th', 'caption',
+    'form', 'input', 'select', 'option', 'textarea',
+    'ul', 'li', 'ol', 'dl', 'dt', 'dd', 'menu', 'dir',
+    'ref', 'references', 'img', 'imagemap', 'source'
+])
 
-#=========================================================================
+# =========================================================================
 #
 # MediaWiki Markup Grammar
- 
+
 # Template = "{{" [ "msg:" | "msgnw:" ] PageName { "|" [ ParameterName "=" AnyText | AnyText ] } "}}" ;
 # Extension = "<" ? extension ? ">" AnyText "</" ? extension ? ">" ;
 # NoWiki = "<nowiki />" | "<nowiki>" ( InlineText | BlockText ) "</nowiki>" ;
@@ -109,12 +111,13 @@ discardElements = set([
 #
 # ParameterName = ? uppercase, lowercase, numbers, no spaces, some special chars ? ;
 #
-#=========================================================================== 
+# ===========================================================================
 
 # Program version
 version = '2.5'
 
 ##### Main function ###########################################################
+
 
 def WikiDocument(out, id, title, text):
     url = get_url(id, prefix)
@@ -130,66 +133,71 @@ def WikiDocument(out, id, title, text):
         print(line.encode('utf-8'), file=out)
     print(footer, file=out)
 
+
 def get_url(id, prefix):
     return "%s?curid=%s" % (prefix, id)
 
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
-selfClosingTags = [ 'br', 'hr', 'nobr', 'ref', 'references' ]
+
+selfClosingTags = ['br', 'hr', 'nobr', 'ref', 'references']
 
 # handle 'a' separetely, depending on keepLinks
 ignoredTags = [
-        'b', 'big', 'blockquote', 'center', 'cite', 'div', 'em',
-        'font', 'h1', 'h2', 'h3', 'h4', 'hiero', 'i', 'kbd', 'nowiki',
-        'p', 'plaintext', 's', 'small', 'span', 'strike', 'strong',
-        'sub', 'sup', 'tt', 'u', 'var',
+    'b', 'big', 'blockquote', 'center', 'cite', 'div', 'em',
+    'font', 'h1', 'h2', 'h3', 'h4', 'hiero', 'i', 'kbd', 'nowiki',
+    'p', 'plaintext', 's', 'small', 'span', 'strike', 'strong',
+    'sub', 'sup', 'tt', 'u', 'var',
 ]
 
-placeholder_tags = {'math':'formula', 'code':'codice'}
+placeholder_tags = {'math': 'formula', 'code': 'codice'}
 
 ##
 # Normalize title
+
+
 def normalizeTitle(title):
-  # remove leading whitespace and underscores
-  title = title.strip(' _')
-  # replace sequences of whitespace and underscore chars with a single space
-  title = re.compile(r'[\s_]+').sub(' ', title)
+    # remove leading whitespace and underscores
+    title = title.strip(' _')
+    # replace sequences of whitespace and underscore chars with a single space
+    title = re.compile(r'[\s_]+').sub(' ', title)
 
-  m = re.compile(r'([^:]*):(\s*)(\S(?:.*))').match(title)
-  if m:
-      prefix = m.group(1)
-      if m.group(2):
-          optionalWhitespace = ' '
-      else:
-          optionalWhitespace = ''
-      rest = m.group(3)
+    m = re.compile(r'([^:]*):(\s*)(\S(?:.*))').match(title)
+    if m:
+        prefix = m.group(1)
+        if m.group(2):
+            optionalWhitespace = ' '
+        else:
+            optionalWhitespace = ''
+        rest = m.group(3)
 
-      ns = prefix.capitalize()
-      if ns in acceptedNamespaces:
-          # If the prefix designates a known namespace, then it might be
-          # followed by optional whitespace that should be removed to get
-          # the canonical page name
-          # (e.g., "Category:  Births" should become "Category:Births").
-          title = ns + ":" + rest.capitalize()
-      else:
-          # No namespace, just capitalize first letter.
-	  # If the part before the colon is not a known namespace, then we must
-          # not remove the space after the colon (if any), e.g.,
-          # "3001: The_Final_Odyssey" != "3001:The_Final_Odyssey".
-          # However, to get the canonical page name we must contract multiple
-          # spaces into one, because
-          # "3001:   The_Final_Odyssey" != "3001: The_Final_Odyssey".
-          title = prefix.capitalize() + ":" + optionalWhitespace + rest
-  else:
-      # no namespace, just capitalize first letter
-      title = title.capitalize();
-  return title
+        ns = prefix.capitalize()
+        if ns in acceptedNamespaces:
+            # If the prefix designates a known namespace, then it might be
+            # followed by optional whitespace that should be removed to get
+            # the canonical page name
+            # (e.g., "Category:  Births" should become "Category:Births").
+            title = ns + ":" + rest.capitalize()
+        else:
+            # No namespace, just capitalize first letter.
+            # If the part before the colon is not a known namespace, then we must
+            # not remove the space after the colon (if any), e.g.,
+            # "3001: The_Final_Odyssey" != "3001:The_Final_Odyssey".
+            # However, to get the canonical page name we must contract multiple
+            # spaces into one, because
+            # "3001:   The_Final_Odyssey" != "3001: The_Final_Odyssey".
+            title = prefix.capitalize() + ":" + optionalWhitespace + rest
+    else:
+        # no namespace, just capitalize first letter
+        title = title.capitalize()
+    return title
 
 ##
 # Removes HTML or XML character references and entities from a text string.
 #
 # @param text The HTML (or XML) source text.
 # @return The plain text, as a Unicode string, if necessary.
+
 
 def unescape(text):
     def fixup(m):
@@ -204,9 +212,10 @@ def unescape(text):
             else:               # named entity
                 return chr(name2codepoint[code])
         except:
-            return text # leave as is
+            return text  # leave as is
 
-    return re.sub("&#?(\w+);", fixup, text)
+    return re.sub(r"&#?(\w+);", fixup, text)
+
 
 # Match HTML comments
 comment = re.compile(r'<!--.*?-->', re.DOTALL)
@@ -219,10 +228,13 @@ for tag in discardElements:
 
 # Match ignored tags
 ignored_tag_patterns = []
+
+
 def ignoreTag(tag):
     left = re.compile(r'<\s*%s\b[^>]*>' % tag, re.IGNORECASE)
     right = re.compile(r'<\s*/\s*%s>' % tag, re.IGNORECASE)
     ignored_tag_patterns.append((left, right))
+
 
 for tag in ignoredTags:
     ignoreTag(tag)
@@ -260,6 +272,8 @@ spaces = re.compile(r' {2,}')
 dots = re.compile(r'\.{4,}')
 
 # A matching function for nested expressions, e.g. namespaces and tables.
+
+
 def dropNested(text, openDelim, closeDelim):
     openRE = re.compile(openDelim)
     closeRE = re.compile(closeDelim)
@@ -275,7 +289,7 @@ def dropNested(text, openDelim, closeDelim):
         next = openRE.search(text, next.end())
         if not next:            # termination
             while nest:         # close all pending
-                nest -=1
+                nest -= 1
                 end0 = closeRE.search(text, end.end())
                 if end0:
                     end = end0
@@ -309,22 +323,24 @@ def dropNested(text, openDelim, closeDelim):
     # collect text outside partitions
     res = ''
     start = 0
-    for s, e in  matches:
+    for s, e in matches:
         res += text[start:s]
         start = e
     res += text[start:]
     return res
+
 
 def dropSpans(matches, text):
     """Drop from text the blocks identified in matches"""
     matches.sort()
     res = ''
     start = 0
-    for s, e in  matches:
+    for s, e in matches:
         res += text[start:s]
         start = e
     res += text[start:]
     return res
+
 
 # Match interwiki links, | separates parameters.
 # First parameter is displayed, also trailing concatenated text included
@@ -338,6 +354,8 @@ wikiLink = re.compile(r'\[\[([^[]*?)(?:\|([^[]*?))?\]\](\w*)')
 parametrizedLink = re.compile(r'\[\[.*?\]\]')
 
 # Function applied to wikiLinks
+
+
 def make_anchor_tag(match):
     global keepLinks
     link = match.group(1)
@@ -353,6 +371,7 @@ def make_anchor_tag(match):
         return '<a href="%s">%s</a>' % (link, anchor)
     else:
         return anchor
+
 
 def clean(text):
 
@@ -393,7 +412,7 @@ def clean(text):
     matches = []
     # Drop HTML comments
     for m in comment.finditer(text):
-            matches.append((m.start(), m.end()))
+        matches.append((m.start(), m.end()))
 
     # Drop self-closing tags
     for pattern in selfClosing_tag_patterns:
@@ -434,13 +453,15 @@ def clean(text):
     text = text.replace('\t', ' ')
     text = spaces.sub(' ', text)
     text = dots.sub('...', text)
-    text = re.sub(' (,:\.\)\]»)', r'\1', text)
-    text = re.sub('(\[\(«) ', r'\1', text)
-    text = re.sub(r'\n\W+?\n', '\n', text) # lines with only punctuations
+    text = re.sub(r' (,:\.\)\]»)', r'\1', text)
+    text = re.sub(r'(\[\(«) ', r'\1', text)
+    text = re.sub(r'\n\W+?\n', '\n', text)  # lines with only punctuations
     text = text.replace(',,', ',').replace(',.', '.')
     return text
 
+
 section = re.compile(r'(==+)\s*(.*?)\s*\1')
+
 
 def compact(text):
     """Deal with headers, lists, empty sections, residuals of tables"""
@@ -501,12 +522,15 @@ def compact(text):
 
     return page
 
+
 def handle_unicode(entity):
     numeric_code = int(entity[2:-1])
-    if numeric_code >= 0x10000: return ''
+    if numeric_code >= 0x10000:
+        return ''
     return chr(numeric_code)
 
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+
 
 class OutputSplitter:
     def __init__(self, compress, max_file_size, path_name):
@@ -553,7 +577,9 @@ class OutputSplitter:
 
 ### READER ###################################################################
 
+
 tagRE = re.compile(r'(.*?)<(/?\w+)[^>]*>(?:([^<]*)(<.*?>)?)?')
+
 
 def process_data(input, output):
     global prefix
@@ -582,7 +608,7 @@ def process_data(input, output):
             inText = True
             line = line[m.start(3):m.end(3)] + '\n'
             page.append(line)
-            if m.lastindex == 4: # open-close
+            if m.lastindex == 4:  # open-close
                 inText = False
         elif tag == '/text':
             if m.group(1):
@@ -607,15 +633,19 @@ def process_data(input, output):
 
 ### CL INTERFACE ############################################################
 
+
 def show_help():
     print(__doc__, end=' ', file=sys.stdout)
+
 
 def show_usage(script_name):
     print('Usage: %s [options]' % script_name, file=sys.stderr)
 
+
 ##
 # Minimum size of output files
 minFileSize = 200 * 1024
+
 
 def main():
     global keepLinks, keepSections, prefix, acceptedNamespaces
@@ -652,17 +682,18 @@ def main():
                     file_size = int(arg[:-1]) * 1024 * 1024
                 else:
                     file_size = int(arg)
-                if file_size < minFileSize: raise ValueError()
+                if file_size < minFileSize:
+                    raise ValueError()
             except ValueError:
                 print('%s: %s: Insufficient or invalid size' % (script_name, arg), file=sys.stderr)
                 sys.exit(2)
         elif opt in ('-n', '--ns'):
-                acceptedNamespaces = set(arg.split(','))
+            acceptedNamespaces = set(arg.split(','))
         elif opt in ('-o', '--output'):
-                output_dir = arg
+            output_dir = arg
         elif opt in ('-v', '--version'):
-                print('WikiExtractor.py version:', version)
-                sys.exit(0)
+            print('WikiExtractor.py version:', version)
+            sys.exit(0)
 
     if len(args) > 0:
         show_usage(script_name)
@@ -681,6 +712,7 @@ def main():
     output_splitter = OutputSplitter(compress, file_size, output_dir)
     process_data(sys.stdin, output_splitter)
     output_splitter.close()
+
 
 if __name__ == '__main__':
     main()

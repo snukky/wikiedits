@@ -39,9 +39,10 @@ def main():
                 edist = None
                 ratio = None
 
+
 if __name__ == '__main__':
     if '-h' in sys.argv or '--help' in sys.argv:
-        print("Usage: python {} < enwiki.xxx.edit > enwiki.xxx.txt" \
-            .format(sys.argv[0]))
+        print("Usage: python {} < enwiki.xxx.edit > enwiki.xxx.txt"
+              .format(sys.argv[0]))
         exit()
     main()

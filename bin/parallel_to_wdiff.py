@@ -21,6 +21,7 @@ def main():
         else:
             print(cor)
 
+
 def wdiff(err_toks, cor_toks):
     result = ''
     matcher = SequenceMatcher(None, err_toks, cor_toks)
@@ -39,6 +40,7 @@ def wdiff(err_toks, cor_toks):
             result += err + ' '
 
     return result.strip()
+
 
 if __name__ == '__main__':
     if '-h' in sys.argv or '--help' in sys.argv:

@@ -41,7 +41,7 @@ class EditFilter(object):
             new_sent = new_sent.strip()
 
             log.info("processing sentences:\n  > %s\n  > %s",
-                old_sent, new_sent)
+                     old_sent, new_sent)
 
             scores = self.__looks_like_sentence_edition(old_sent, new_sent)
             if not scores:
@@ -118,7 +118,7 @@ class EditFilter(object):
         min_words = min(len(old_words), len(new_words))
         dist = self.__levenshtein_on_words(old_words, new_words)
         ratio = dist / float(min_words) * math.log(min_words,
-            self.LEVENSHTEIN_RATIO_LOG_BASE)
+                                                   self.LEVENSHTEIN_RATIO_LOG_BASE)
 
         return (ratio, dist)
 

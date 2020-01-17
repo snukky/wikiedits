@@ -13,7 +13,7 @@ class DiffFinderTest(unittest.TestCase):
         edits = self.diff.edited_fragments(old_text, new_text)
 
         self.assertEqual(1, len(edits))
-        self.assertEqual(("d","D"), edits[0])
+        self.assertEqual(("d", "D"), edits[0])
 
     def test_edited_fragments(self):
         old_text = "Ala ma kota.\nDawno, dawno temu.".split("\n")
@@ -22,11 +22,12 @@ class DiffFinderTest(unittest.TestCase):
         edits = self.diff.edited_fragments(old_text, new_text)
 
         self.assertEqual(1, len(edits))
-        self.assertEqual(("Ala ma kota.","Ala ma psa."), edits[0])
+        self.assertEqual(("Ala ma kota.", "Ala ma psa."), edits[0])
 
 
 def main():
     unittest.main()
+
 
 if __name__ == '__main__':
     main()

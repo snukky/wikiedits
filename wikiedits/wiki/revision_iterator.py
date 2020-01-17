@@ -8,6 +8,7 @@ import re
 
 HTML_TAG_REGEX = r'<[^>]{1,20}?>'
 
+
 class RevisionIterator(object):
 
     def __init__(self, filename, lang='english'):
@@ -48,6 +49,6 @@ class RevisionIterator(object):
         return "\n".join(clean_html) if len(clean_html) > 0 else ""
 
     def __is_revert_vandalism(self, comment):
-        if type(comment) is str:
+        if isinstance(comment, str):
             return bool(self.vandalism_regex.search(comment))
         return False

@@ -17,6 +17,6 @@ class EditExtractor(object):
         # have been returned.
         try:
             return [edit for frag_pair in frags
-                         for edit in self.filter.filter_edits(*frag_pair)]
+                    for edit in self.filter.filter_edits(*frag_pair)]
         except:
             return []

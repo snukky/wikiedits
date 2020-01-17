@@ -34,7 +34,7 @@ def main():
         output = "{old}\n{new}\n\n"
         if args.scores:
             output = "### scores: {{dist: {dist}, ratio: {ratio}}}\n" \
-                   + output
+                + output
 
     out = args.output
     if args.output != sys.stdout:
@@ -46,18 +46,20 @@ def main():
 
         for (old_edit, new_edit, scores) in edits:
             out.write(output.format(old=old_edit.encode('utf-8'),
-                      new=new_edit.encode('utf-8'),
-                      ratio=scores[0],
-                      dist=scores[1]))
+                                    new=new_edit.encode('utf-8'),
+                                    ratio=scores[0],
+                                    dist=scores[1]))
 
     if args.output != sys.stdout:
         out.close()
+
 
 def format_meta_data(data):
     lines = ["### %s" % line
              for line in yaml.dump(data, allow_unicode=True).split('\n')
              if line]
     return '\n'.join(lines)
+
 
 def parse_user_args():
     parser = argparse.ArgumentParser(
@@ -83,22 +85,23 @@ def parse_user_args():
                        help="specify language of NLTK sentence splitter",
                        choices=LANGUAGES)
     group.add_argument("--min-chars", type=int, default=10,
-                       help="set the minimum number of characters in a " \
+                       help="set the minimum number of characters in a "
                             "sentence")
     group.add_argument("--min-words", type=int, default=2,
                        help="set minimum length of sentence in words")
     group.add_argument("--max-words", type=int, default=120,
                        help="set maximum length of sentence in words")
     group.add_argument("--length-diff", type=int, default=4,
-                       help="set maximum difference in length between " \
+                       help="set maximum difference in length between "
                             "edited sentences")
     group.add_argument("--edit-ratio", type=float, default=0.3,
-                       help="set maximum relative difference in edit " \
+                       help="set maximum relative difference in edit "
                             "distance")
 
     args = parser.parse_args()
 
     return args
+
 
 def set_logging_level(log_level):
     if log_level is not None:

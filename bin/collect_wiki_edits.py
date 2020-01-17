@@ -16,7 +16,7 @@ def main():
     debug("working dir: {}".format(args.work_dir))
     if not os.path.exists(args.work_dir):
         os.makedirs(args.work_dir)
-    process_dump_file(args.dump_files,args.work_dir,args.extra_options)
+    process_dump_file(args.dump_files, args.work_dir, args.extra_options)
 
 
 def process_dump_file(file, work_dir, options):
@@ -50,14 +50,15 @@ def process_dump_file(file, work_dir, options):
         debug("file extension {} not recognized!".format(file_ext))
         return False
 
-    os.popen("{cat} {dump} | python {dir}/wiki_edits.py {opts} > {edits}" \
-        .format(cat=cmd, dir=WIKIEDITS_DIR, opts=options,
-                dump=file, edits=edit_file))
+    os.popen("{cat} {dump} | python {dir}/wiki_edits.py {opts} > {edits}"
+             .format(cat=cmd, dir=WIKIEDITS_DIR, opts=options,
+                     dump=file, edits=edit_file))
     return True
 
 
 def debug(msg):
     print(msg, file=sys.stderr)
+
 
 def parse_user_args():
     parser = argparse.ArgumentParser(
