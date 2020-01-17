@@ -3,7 +3,7 @@
 from wikiedits.wiki.wiki_dump_parser import WikiDumpParser
 from wikiedits.wiki import VANDALISM_REGEXES
 
-import WikiExtractor
+from . import WikiExtractor
 import re
 
 HTML_TAG_REGEX = r'<[^>]{1,20}?>'

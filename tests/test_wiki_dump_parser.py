@@ -14,7 +14,7 @@ class WikiDumpParserTest(unittest.TestCase):
                                  "enwiki-20140102.tiny.xml.gz")
 
         dump = gzip.open(file_name, "rb")
-        with open(self.WIKI_TEMP_FILE, "w") as file:
+        with open(self.WIKI_TEMP_FILE, "wb") as file:
             file.write(dump.read())
         dump.close()
 

@@ -57,11 +57,11 @@ Options:
 import sys
 import gc
 import getopt
-import urllib
+import urllib.request, urllib.parse, urllib.error
 import re
 import bz2
 import os.path
-from htmlentitydefs import name2codepoint
+from html.entities import name2codepoint
 
 ### PARAMS ####################################################################
 
@@ -125,10 +125,10 @@ def WikiDocument(out, id, title, text):
     text = clean(text)
     footer = "\n</doc>"
     out.reserve(len(header) + len(text) + len(footer))
-    print >> out, header
+    print(header, file=out)
     for line in compact(text):
-        print >> out, line.encode('utf-8')
-    print >> out, footer
+        print(line.encode('utf-8'), file=out)
+    print(footer, file=out)
 
 def get_url(id, prefix):
     return "%s?curid=%s" % (prefix, id)
@@ -198,11 +198,11 @@ def unescape(text):
         try:
             if text[1] == "#":  # character reference
                 if text[2] == "x":
-                    return unichr(int(code[1:], 16))
+                    return chr(int(code[1:], 16))
                 else:
-                    return unichr(int(code))
+                    return chr(int(code))
             else:               # named entity
-                return unichr(name2codepoint[code])
+                return chr(name2codepoint[code])
         except:
             return text # leave as is
 
@@ -235,7 +235,7 @@ for tag in selfClosingTags:
 
 # Match HTML placeholder tags
 placeholder_tag_patterns = []
-for tag, repl in placeholder_tags.items():
+for tag, repl in list(placeholder_tags.items()):
     pattern = re.compile(r'<\s*%s(\s*| [^>]+?)>.*?<\s*/\s*%s\s*>' % (tag, tag), re.DOTALL | re.IGNORECASE)
     placeholder_tag_patterns.append((pattern, repl))
 
@@ -422,7 +422,7 @@ def clean(text):
             text = text.replace(match.group(), '%s_%d' % (placeholder, index))
             index += 1
 
-    text = text.replace('<<', u'«').replace('>>', u'»')
+    text = text.replace('<<', '«').replace('>>', '»')
 
     #############################################
 
@@ -434,8 +434,8 @@ def clean(text):
     text = text.replace('\t', ' ')
     text = spaces.sub(' ', text)
     text = dots.sub('...', text)
-    text = re.sub(u' (,:\.\)\]»)', r'\1', text)
-    text = re.sub(u'(\[\(«) ', r'\1', text)
+    text = re.sub(' (,:\.\)\]»)', r'\1', text)
+    text = re.sub('(\[\(«) ', r'\1', text)
     text = re.sub(r'\n\W+?\n', '\n', text) # lines with only punctuations
     text = text.replace(',,', ',').replace(',.', '.')
     return text
@@ -464,7 +464,7 @@ def compact(text):
                 title += '.'
             headers[lev] = title
             # drop previous headers
-            for i in headers.keys():
+            for i in list(headers.keys()):
                 if i > lev:
                     del headers[i]
             emptySection = True
@@ -489,7 +489,7 @@ def compact(text):
         elif (line[0] == '(' and line[-1] == ')') or line.strip('.-') == '':
             continue
         elif len(headers):
-            items = headers.items()
+            items = list(headers.items())
             items.sort()
             for (i, v) in items:
                 page.append(v)
@@ -504,7 +504,7 @@ def compact(text):
 def handle_unicode(entity):
     numeric_code = int(entity[2:-1])
     if numeric_code >= 0x10000: return ''
-    return unichr(numeric_code)
+    return chr(numeric_code)
 
 #------------------------------------------------------------------------------
 
@@ -594,7 +594,7 @@ def process_data(input, output):
             colon = title.find(':')
             if (colon < 0 or title[:colon] in acceptedNamespaces) and \
                     not redirect:
-                print id, title.encode('utf-8')
+                print(id, title.encode('utf-8'))
                 sys.stdout.flush()
                 WikiDocument(output, id, title, ''.join(page))
             id = None
@@ -608,10 +608,10 @@ def process_data(input, output):
 ### CL INTERFACE ############################################################
 
 def show_help():
-    print >> sys.stdout, __doc__,
+    print(__doc__, end=' ', file=sys.stdout)
 
 def show_usage(script_name):
-    print >> sys.stderr, 'Usage: %s [options]' % script_name
+    print('Usage: %s [options]' % script_name, file=sys.stderr)
 
 ##
 # Minimum size of output files
@@ -654,15 +654,14 @@ def main():
                     file_size = int(arg)
                 if file_size < minFileSize: raise ValueError()
             except ValueError:
-                print >> sys.stderr, \
-                '%s: %s: Insufficient or invalid size' % (script_name, arg)
+                print('%s: %s: Insufficient or invalid size' % (script_name, arg), file=sys.stderr)
                 sys.exit(2)
         elif opt in ('-n', '--ns'):
                 acceptedNamespaces = set(arg.split(','))
         elif opt in ('-o', '--output'):
                 output_dir = arg
         elif opt in ('-v', '--version'):
-                print 'WikiExtractor.py version:', version
+                print('WikiExtractor.py version:', version)
                 sys.exit(0)
 
     if len(args) > 0:
@@ -673,7 +672,7 @@ def main():
         try:
             os.makedirs(output_dir)
         except:
-            print >> sys.stderr, 'Could not create: ', output_dir
+            print('Could not create: ', output_dir, file=sys.stderr)
             return
 
     if not keepLinks:

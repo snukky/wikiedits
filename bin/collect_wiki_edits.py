@@ -5,14 +5,9 @@ import sys
 import os
 import argparse
 
-from joblib import Parallel, delayed
-
 
 WIKIEDITS_DIR = os.path.abspath(os.path.dirname(__file__))
 WIKIEDITS_OPTIONS = "-m -l polish"
-
-JOBS = 4
-PARALLEL_VERBOSE = False
 
 
 def main():
@@ -21,16 +16,8 @@ def main():
     debug("working dir: {}".format(args.work_dir))
     if not os.path.exists(args.work_dir):
         os.makedirs(args.work_dir)
+    process_dump_file(args.dump_files,args.work_dir,args.extra_options)
 
-    jobs = []
-
-    with open(args.dump_files) as files:
-        for idx, file in enumerate(files):
-
-            jobs.append(delayed(process_dump_file) \
-                (file.strip(), args.work_dir, args.extra_options))
-
-    Parallel(n_jobs=args.jobs, verbose=PARALLEL_VERBOSE)(jobs)
 
 def process_dump_file(file, work_dir, options):
     debug("processing dump: {}".format(file))
@@ -66,15 +53,11 @@ def process_dump_file(file, work_dir, options):
     os.popen("{cat} {dump} | python {dir}/wiki_edits.py {opts} > {edits}" \
         .format(cat=cmd, dir=WIKIEDITS_DIR, opts=options,
                 dump=file, edits=edit_file))
-
-    wc = os.popen("wc -l {}".format(edit_file)).read().strip().split()[0]
-    debug("edit file collected with {} lines".format(wc))
-
     return True
 
 
 def debug(msg):
-    print >> sys.stderr, msg
+    print(msg, file=sys.stderr)
 
 def parse_user_args():
     parser = argparse.ArgumentParser(

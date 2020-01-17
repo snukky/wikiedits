@@ -30,16 +30,16 @@ def main():
 
                 if comment:
                     if ONE_LINE_COMMENTS:
-                        print minimize_comment(comment)
+                        print(minimize_comment(comment))
                     else:
-                        print comment.strip()
+                        print(comment.strip())
                     comment = ''
 
                 text = wdiff(err.split(), cor.split())
                 if text:
-                    print text
+                    print(text)
                 else:
-                    print cor
+                    print(cor)
                 err = None
                 cor = None
 
@@ -68,7 +68,7 @@ def wdiff(err_toks, cor_toks):
 
 if __name__ == '__main__':
     if '-h' in sys.argv or '--help' in sys.argv:
-        print "Example: cat enwiki.xxx.txt | perl path/to/mosesdecoder/.../tokenizer-for-wiked.perl -no-escape -skip | python convert_to_wdiff.py [--skip-comments] [--one-line-comments]"
+        print("Example: cat enwiki.xxx.txt | perl path/to/mosesdecoder/.../tokenizer-for-wiked.perl -no-escape -skip | python convert_to_wdiff.py [--skip-comments] [--one-line-comments]")
         exit()
 
     if '--skip-comments' in sys.argv:

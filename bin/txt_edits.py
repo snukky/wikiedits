@@ -26,7 +26,7 @@ def main():
     old_text = old_text_file.readlines()
     new_text = new_text_file.readlines()
 
-    for loopvar in tqdm(range(0,len(old_text),batch_size)):
+    for loopvar in tqdm(list(range(0,len(old_text),batch_size))):
         # Split into batches of sentences
         old_text_batch = " ".join(line.rstrip() for line in old_text[loopvar:loopvar+batch_size])
         new_text_batch = " ".join(line.rstrip() for line in new_text[loopvar:loopvar+batch_size])
@@ -44,7 +44,7 @@ def main():
             if args.scores:
                 output += "{dist} {ratio}\n"
         for old_edit, new_edit, scores in edits.extract_edits(old_text_batch, new_text_batch):
-            print output.format(old=old_edit, new=new_edit,ratio=scores[0], dist=scores[1])
+            print(output.format(old=old_edit, new=new_edit,ratio=scores[0], dist=scores[1]))
     old_text_file.close()
     new_text_file.close()
 

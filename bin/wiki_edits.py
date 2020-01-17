@@ -7,11 +7,6 @@ import argparse
 import logging
 import yaml
 
-# it may be required if you have installed NLTK locally
-#import nltk.data
-#nltk.data.path.append('$HOME/nltk_data')
-
-sys.path.insert(1, os.path.join(sys.path[0], '..'))
 
 from wikiedits.wiki_edit_extractor import WikiEditExtractor
 from wikiedits import LANGUAGES
@@ -69,9 +64,9 @@ def parse_user_args():
         description="Extracts edited text fragments from Wikipedia revisions.",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
-    parser.add_argument("input", default="<STDIN>", nargs="?",
+    parser.add_argument("input", default=sys.stdin, nargs="?",
                         help="Wiki XML dump with complete edit history")
-    parser.add_argument("output", default="<STDOUT>", nargs="?",
+    parser.add_argument("output", default=sys.stdout, nargs="?",
                         help="File for extracted editions")
 
     parser.add_argument("-m", "--meta-data", action="store_true",
@@ -102,10 +97,7 @@ def parse_user_args():
                             "distance")
 
     args = parser.parse_args()
-    if args.input == "<STDIN>":
-        args.input = sys.stdin
-    if args.output == "<STDOUT>":
-        args.output = sys.stdout
+
     return args
 
 def set_logging_level(log_level):
