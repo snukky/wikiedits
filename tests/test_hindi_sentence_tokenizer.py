@@ -2,7 +2,7 @@ import unittest
 from wikiedits.hindi_sentence_tokenizer import HindiSentenceTokenizer
 
 
-class TestHindiSentenceTokenizer(unittest.TestCase):
+class TestHindiSentenceTokenizer:
 
     def setUp(self):
 
