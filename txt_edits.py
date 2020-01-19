@@ -21,7 +21,7 @@ def main():
     args = parse_user_args()
 
     if args.debug:
-        set_logging_level('debug')
+        logging.basicConfig(level=logging.DEBUG)
 
     old_text_file = open(args.old_text_file, 'r')
     new_text_file = open(args.new_text_file, 'r')
@@ -49,12 +49,6 @@ def main():
             print(output.format(old=old_edit, new=new_edit, ratio=scores[0], dist=scores[1]))
     old_text_file.close()
     new_text_file.close()
-
-
-def set_loging_level(log_level):
-    if log_level is not None:
-        numeric_level = getattr(logging, log_level.upper(), None)
-        logging.basicConfig(level=numeric_level)
 
 
 def parse_user_args():

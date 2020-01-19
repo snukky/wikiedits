@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import os
 import sys
 from difflib import SequenceMatcher
 
@@ -11,7 +10,6 @@ ONE_LINE_COMMENTS = False
 
 def main():
     err = None
-    cor = None
     comment = ''
 
     for line in sys.stdin:
@@ -21,7 +19,6 @@ def main():
             if not SKIP_COMMENTS:
                 comment += line + "\n"
             err = None
-            cor = None
         elif line:
             if err is None:
                 err = line
@@ -41,7 +38,6 @@ def main():
                 else:
                     print(cor)
                 err = None
-                cor = None
 
 
 def minimize_comment(comment):

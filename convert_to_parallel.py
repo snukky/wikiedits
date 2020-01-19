@@ -1,6 +1,5 @@
 #!/usr/bin/python
 
-import os
 import sys
 import re
 
@@ -9,7 +8,6 @@ SKIP_COMMENTS = True
 
 def main():
     err = None
-    cor = None
     edist = None
     ratio = None
 
@@ -24,7 +22,6 @@ def main():
             if not SKIP_COMMENTS:
                 print(line)
             err = None
-            cor = None
         elif line:
             if err is None:
                 err = line.replace('\t', '')
@@ -35,7 +32,6 @@ def main():
                 else:
                     print("{}\t{}".format(err, cor))
                 err = None
-                cor = None
                 edist = None
                 ratio = None
 
