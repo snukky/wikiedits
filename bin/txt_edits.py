@@ -9,6 +9,7 @@ import logging
 from tqdm import tqdm
 # it may be required if you have installed NLTK locally
 import nltk.data
+
 nltk.data.path.append('$HOME/nltk_data')
 
 sys.path.insert(1, os.path.join(sys.path[0], '..'))

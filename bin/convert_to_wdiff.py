@@ -71,7 +71,8 @@ def wdiff(err_toks, cor_toks):
 
 if __name__ == '__main__':
     if '-h' in sys.argv or '--help' in sys.argv:
-        print("Example: cat enwiki.xxx.txt | perl path/to/mosesdecoder/.../tokenizer-for-wiked.perl -no-escape -skip | python convert_to_wdiff.py [--skip-comments] [--one-line-comments]")
+        print(
+            "Example: cat enwiki.xxx.txt | perl path/to/mosesdecoder/.../tokenizer-for-wiked.perl -no-escape -skip | python convert_to_wdiff.py [--skip-comments] [--one-line-comments]")
         exit()
 
     if '--skip-comments' in sys.argv:

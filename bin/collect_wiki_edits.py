@@ -5,7 +5,6 @@ import sys
 import os
 import argparse
 
-
 WIKIEDITS_DIR = os.path.abspath(os.path.dirname(__file__))
 WIKIEDITS_OPTIONS = "-m -l polish"
 
