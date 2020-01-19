@@ -17,12 +17,12 @@ class HindiSentenceTokenizerTest(unittest.TestCase):
         self.assertListEqual(self.tokenizer.tokenize(text)==sent)
 
     def test_tokenize_empty(self):
-        test ="   "
+        text ="   "
         sent=[]
         self.assertListEqual(self.tokenizer.tokenize(text)==sent)
 
     def test_tokenize_other(self):
-        test ="कालिंजर दुर्ग, भारतीय राज्य उत्तर प्रदेश के बांदा! विंध्य पर्वत पर स्थित यह दुर्ग विश्व धरोहर!? विंध्य पर्वत पर स्थित यह दुर्ग विश्व धरोहर"
+        text ="कालिंजर दुर्ग, भारतीय राज्य उत्तर प्रदेश के बांदा! विंध्य पर्वत पर स्थित यह दुर्ग विश्व धरोहर!? विंध्य पर्वत पर स्थित यह दुर्ग विश्व धरोहर"
         sent=["कालिंजर दुर्ग, भारतीय राज्य उत्तर प्रदेश के बांदा!",
               "विंध्य पर्वत पर स्थित यह दुर्ग विश्व धरोहर!?",
               "विंध्य पर्वत पर स्थित यह दुर्ग विश्व धरोहर"]
