@@ -1,11 +1,11 @@
 import unittest
+
 from wikiedits.hindi_sentence_tokenizer import HindiSentenceTokenizer
 
 
 class TestHindiSentenceTokenizer(unittest.TestCase):
 
     def setUp(self):
-
         self.tokenizer = HindiSentenceTokenizer()
 
     def test_tokenize_simple(self):

@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from lxml import etree
 import sys
+
+from lxml import etree
 
 
 class WikiDumpParser(object):

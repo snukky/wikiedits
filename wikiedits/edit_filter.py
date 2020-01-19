@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
 
-from wikiedits.diff_finder import DiffFinder
-
-import nltk.data
-import Levenshtein
+import logging
 import math
 
-import logging
+import Levenshtein
+import nltk.data
+
 log = logging.getLogger(__name__)
 
 
@@ -24,11 +23,11 @@ class EditFilter(object):
 
         self.LEVENSHTEIN_RATIO_LOG_BASE = 20
 
-        self.MIN_TEXT_LENGTH = min_chars                # in characters
-        self.MIN_WORDS_IN_SENTENCE = min_words          # in words
-        self.MAX_WORDS_IN_SENTENCE = max_words          # in words
-        self.MAX_LENGTH_DIFF = length_diff              # on words
-        self.MAX_LEVENSHTEIN_RATIO = edit_ratio         # on words
+        self.MIN_TEXT_LENGTH = min_chars  # in characters
+        self.MIN_WORDS_IN_SENTENCE = min_words  # in words
+        self.MAX_WORDS_IN_SENTENCE = max_words  # in words
+        self.MAX_LENGTH_DIFF = length_diff  # on words
+        self.MAX_LEVENSHTEIN_RATIO = edit_ratio  # on words
 
     def filter_edits(self, old_text, new_text):
         log.debug("processing texts:\n  >>> %s\n  >>> %s", old_text, new_text)
@@ -123,7 +122,7 @@ class EditFilter(object):
         return (ratio, dist)
 
     def __levenshtein_on_words(self, words1, words2):
-        char = 32   # 32 + 33 = 'A'
+        char = 32  # 32 + 33 = 'A'
         word_map = {}
         for word in set(words1 + words2):
             word_map[word] = chr((char % 93) + 33)

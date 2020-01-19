@@ -1,17 +1,19 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import sys
-import os
 import argparse
 import logging
-import yaml
+import os
 import re
-from subprocess import PIPE, Popen
 import subprocess
-from wikiedits.wiki_edit_extractor import WikiEditExtractor
-from wikiedits import LANGUAGES
+import sys
+from subprocess import PIPE
 from urllib.parse import urlparse
+
+import yaml
+
+from wikiedits import LANGUAGES
+from wikiedits.wiki_edit_extractor import WikiEditExtractor
 
 log = logging.getLogger(__name__)
 

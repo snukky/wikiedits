@@ -1,11 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
-import sys
 from difflib import ndiff, restore
-import pprint
-
-# pp = pprint.PrettyPrinter(stream=sys.stderr)
 
 
 class DiffFinder(object):

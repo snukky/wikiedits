@@ -1,11 +1,11 @@
-import unittest
-import os
 import gzip
+import os
+import unittest
+
 from wikiedits.wiki.wiki_dump_parser import WikiDumpParser
 
 
 class WikiDumpParserTest(unittest.TestCase):
-
     WIKI_TEMP_FILE = "enwiki.temp.xml"
 
     def setUp(self):

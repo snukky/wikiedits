@@ -1,14 +1,16 @@
 #!/usr/bin/python
 
-from wikiedits import LANGUAGES
-from wikiedits.edit_extractor import EditExtractor
-import sys
-import os
 import argparse
 import logging
-from tqdm import tqdm
+import os
+import sys
+
 # it may be required if you have installed NLTK locally
 import nltk.data
+from tqdm import tqdm
+
+from wikiedits import LANGUAGES
+from wikiedits.edit_extractor import EditExtractor
 
 nltk.data.path.append('$HOME/nltk_data')
 

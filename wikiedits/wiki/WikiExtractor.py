@@ -54,15 +54,11 @@ Options:
   -h, --help            : display this help and exit
 """
 
-import sys
-import gc
-import getopt
-import urllib.request
-import urllib.parse
-import urllib.error
-import re
 import bz2
+import getopt
 import os.path
+import re
+import sys
 from html.entities import name2codepoint
 
 ### PARAMS ####################################################################
@@ -116,6 +112,7 @@ discardElements = set([
 # Program version
 version = '2.5'
 
+
 ##### Main function ###########################################################
 
 
@@ -137,6 +134,7 @@ def WikiDocument(out, id, title, text):
 def get_url(id, prefix):
     return "%s?curid=%s" % (prefix, id)
 
+
 # ------------------------------------------------------------------------------
 
 
@@ -151,6 +149,7 @@ ignoredTags = [
 ]
 
 placeholder_tags = {'math': 'formula', 'code': 'codice'}
+
 
 ##
 # Normalize title
@@ -192,6 +191,7 @@ def normalizeTitle(title):
         title = title.capitalize()
     return title
 
+
 ##
 # Removes HTML or XML character references and entities from a text string.
 #
@@ -209,7 +209,7 @@ def unescape(text):
                     return chr(int(code[1:], 16))
                 else:
                     return chr(int(code))
-            else:               # named entity
+            else:  # named entity
                 return chr(name2codepoint[code])
         except:
             return text  # leave as is
@@ -271,6 +271,7 @@ spaces = re.compile(r' {2,}')
 # Matches dots
 dots = re.compile(r'\.{4,}')
 
+
 # A matching function for nested expressions, e.g. namespaces and tables.
 
 
@@ -278,8 +279,8 @@ def dropNested(text, openDelim, closeDelim):
     openRE = re.compile(openDelim)
     closeRE = re.compile(closeDelim)
     # partition text in separate blocks { } { }
-    matches = []                # pairs (s, e) for each partition
-    nest = 0                    # nesting level
+    matches = []  # pairs (s, e) for each partition
+    nest = 0  # nesting level
     start = openRE.search(text, 0)
     if not start:
         return text
@@ -287,8 +288,8 @@ def dropNested(text, openDelim, closeDelim):
     next = start
     while end:
         next = openRE.search(text, next.end())
-        if not next:            # termination
-            while nest:         # close all pending
+        if not next:  # termination
+            while nest:  # close all pending
                 nest -= 1
                 end0 = closeRE.search(text, end.end())
                 if end0:
@@ -304,7 +305,7 @@ def dropNested(text, openDelim, closeDelim):
                 # try closing more
                 last = end.end()
                 end = closeRE.search(text, end.end())
-                if not end:     # unbalanced
+                if not end:  # unbalanced
                     if matches:
                         span = (matches[0][0], last)
                     else:
@@ -316,7 +317,7 @@ def dropNested(text, openDelim, closeDelim):
                 # advance start, find next close
                 start = next
                 end = closeRE.search(text, next.end())
-                break           # { }
+                break  # { }
         if next != start:
             # { { }
             nest += 1
@@ -353,6 +354,7 @@ wikiLink = re.compile(r'\[\[([^[]*?)(?:\|([^[]*?))?\]\](\w*)')
 
 parametrizedLink = re.compile(r'\[\[.*?\]\]')
 
+
 # Function applied to wikiLinks
 
 
@@ -374,7 +376,6 @@ def make_anchor_tag(match):
 
 
 def clean(text):
-
     # FIXME: templates should be expanded
     # Drop transclusions (template, parser functions)
     # See: http://www.mediawiki.org/wiki/Help:Templates
@@ -465,10 +466,10 @@ section = re.compile(r'(==+)\s*(.*?)\s*\1')
 
 def compact(text):
     """Deal with headers, lists, empty sections, residuals of tables"""
-    page = []                   # list of paragraph
-    headers = {}                # Headers for unfilled sections
-    emptySection = False        # empty sections are discarded
-    inList = False              # whether opened <UL>
+    page = []  # list of paragraph
+    headers = {}  # Headers for unfilled sections
+    emptySection = False  # empty sections are discarded
+    inList = False  # whether opened <UL>
 
     for line in text.split('\n'):
 
@@ -515,7 +516,7 @@ def compact(text):
             for (i, v) in items:
                 page.append(v)
             headers.clear()
-            page.append(line)   # first line
+            page.append(line)  # first line
             emptySection = False
         elif not emptySection:
             page.append(line)
@@ -528,6 +529,7 @@ def handle_unicode(entity):
     if numeric_code >= 0x10000:
         return ''
     return chr(numeric_code)
+
 
 # ------------------------------------------------------------------------------
 
@@ -574,6 +576,7 @@ class OutputSplitter:
 
     def file_name(self):
         return 'wiki_%02d' % self.file_index
+
 
 ### READER ###################################################################
 
@@ -630,6 +633,7 @@ def process_data(input, output):
             # /mediawiki/siteinfo/base
             base = m.group(3)
             prefix = base[:base.rfind("/")]
+
 
 ### CL INTERFACE ############################################################
 

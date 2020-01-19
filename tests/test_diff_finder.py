@@ -1,4 +1,5 @@
 import unittest
+
 from wikiedits.diff_finder import DiffFinder
 
 

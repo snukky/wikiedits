@@ -1,6 +1,7 @@
-import unittest
-import os
 import gzip
+import os
+import unittest
+
 from wikiedits.wiki.revision_iterator import RevisionIterator
 
 
