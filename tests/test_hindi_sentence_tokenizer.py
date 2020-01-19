@@ -25,9 +25,12 @@ class TestHindiSentenceTokenizer:
 
     def test_tokenize_other(self):
         text = "कालिंजर दुर्ग, भारतीय राज्य उत्तर प्रदेश के बांदा! विंध्य पर्वत पर स्थित यह दुर्ग विश्व धरोहर!? विंध्य पर्वत पर स्थित यह दुर्ग विश्व धरोहर!"
-        sent = ["कालिंजर दुर्ग, भारतीय राज्य उत्तर प्रदेश के बांदा!",
-                "विंध्य पर्वत पर स्थित यह दुर्ग विश्व धरोहर!?",
-                "विंध्य पर्वत पर स्थित यह दुर्ग विश्व धरोहर"]
+        sent = [
+            "कालिंजर दुर्ग, भारतीय राज्य उत्तर प्रदेश के बांदा!",
+
+            "विंध्य पर्वत पर स्थित यह दुर्ग विश्व धरोहर!?",
+            "विंध्य पर्वत पर स्थित यह दुर्ग विश्व धरोहर!"
+            ]
         self.assertListEqual(list(self.tokenizer.tokenize(text)), sent)
 
     def test_tokenize_space(self):
@@ -36,6 +39,6 @@ class TestHindiSentenceTokenizer:
         self.assertListEqual(list(self.tokenizer.tokenize(text)), sent)
 
     def test_tokenize_noend(self):
-        text = "विंध्य पर्वत पर स्थित यह दुर्ग विश्व धरोहर"
-        sent = ["विंध्य पर्वत पर स्थित यह दुर्ग विश्व धरोहर ! ?"]
+        text = "विंध्य पर्वत पर स्थित यह दुर्ग विश्व धरोह"
+        sent = ["विंध्य पर्वत पर स्थित यह दुर्ग विश्व धरोह"]
         self.assertListEqual(list(self.tokenizer.tokenize(text)), sent)
