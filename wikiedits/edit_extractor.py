@@ -16,6 +16,6 @@ class EditExtractor:
         try:
             for frag_pair in frags:
                 for edit in self.filter.filter_edits(*frag_pair):
-                    return edit 
+                    return edit
         except:
             return

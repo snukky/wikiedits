@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from enum import Enum
-import sys, os
+
+import sys
+import os
 import argparse
 import logging
 import yaml
@@ -157,5 +158,5 @@ def select_output(meta):
 
 
 if __name__ == "__main__":
-    #main()
+    # main()
     pass

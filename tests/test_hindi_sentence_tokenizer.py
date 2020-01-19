@@ -30,7 +30,7 @@ class TestHindiSentenceTokenizer(unittest.TestCase):
 
             "विंध्य पर्वत पर स्थित यह दुर्ग विश्व धरोहर!?",
             "विंध्य पर्वत पर स्थित यह दुर्ग विश्व धरोहर!"
-            ]
+        ]
         self.assertListEqual(list(self.tokenizer.tokenize(text)), sent)
 
     def test_tokenize_space(self):
