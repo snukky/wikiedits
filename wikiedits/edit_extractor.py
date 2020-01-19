@@ -4,7 +4,7 @@ from wikiedits.diff_finder import DiffFinder
 from wikiedits.edit_filter import EditFilter
 
 
-class EditExtractor(object):
+class EditExtractor:
 
     def __init__(self, **kwargs):
         self.diff = DiffFinder()
@@ -13,10 +13,9 @@ class EditExtractor(object):
     def extract_edits(self, old_text, new_text):
         frags = self.diff.edited_fragments(old_text.split("\n"),
                                            new_text.split("\n"))
-        # Generator is not used as it doesn't allow to check how many edits
-        # have been returned.
         try:
-            return [edit for frag_pair in frags
-                    for edit in self.filter.filter_edits(*frag_pair)]
+            for frag_pair in frags:
+                for edit in self.filter.filter_edits(*frag_pair):
+                    return edit 
         except:
-            return []
+            return
