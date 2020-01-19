@@ -25,7 +25,7 @@ class HindiSentenceTokenizer:
                 sentence=text[:splitting_point+1]
                 text=text[splitting_point+1:]
                 ans=sentence
-                i=0
+                
             else:
                 ans=text
                 text=""
