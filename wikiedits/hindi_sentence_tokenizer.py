@@ -2,29 +2,39 @@ class HindiSentenceTokenizer:
     def tokenize(self,text):
         sentence_end=('|','।','!','?')
         text_len=len(text)
-        sentences=[]
         pos=[0]*len(sentence_end)
         splitting_point=0
         while len(text)>0:
             for i in range(len(sentence_end)):
                 pos[i]=text.find(sentence_end[i])
-            if pos.count(-1)==len(pos):
-                break
-            splitting_point=min([x for x in pos if not x==-1])
-            sentences.append(text[:splitting_point+1])
-            text=text[splitting_point+1:]
-            ans=sentences[len(sentences)-1]
-            i=0
-            while i<len(ans) and ans[i]==' ':
-                i=i+1
-            if i<len(ans):
-                ans=ans[i:]
-                i=len(ans)-1
-                while i>0 and ans[i]==' ':
-                    i=i-1
-                if i>0:
-                    ans=ans[:i+1]
-                    yield ans
+            if not pos.count(-1)==len(pos):            
+                splitting_point=min([x for x in pos if not x==-1])
+                if text[splitting_point]=='!':
+                    m=splitting_point
+                    m=m+1
+                    while m<len(text):
+                        if text[m]==' ':
+                            m=m+1
+                        elif text[m]=='?':
+                            splitting_point=m
+                            break
+                        else:
+                            break
+                if splitting_point+1<len(text) and text[splitting_point] in '?!':
+                    splitting_point+=1
+                sentence=text[:splitting_point+1]
+                text=text[splitting_point+1:]
+                ans=sentence
+                i=0
+            else:
+                ans=text
+                text=""
+            ans=ans.rstrip()
+            ans=ans.lstrip()
+            if len(ans)>1:
+                yield ans
+                
+                    
     
             
         
