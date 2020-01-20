@@ -39,15 +39,15 @@ class EditFilter(object):
             old_sent = old_sent.strip()
             new_sent = new_sent.strip()
 
-            log.info("processing sentences:\n  > %s\n  > %s",
-                     old_sent, new_sent)
+            log.debug("processing sentences:\n  > %s\n  > %s",
+                      old_sent, new_sent)
 
             scores = self.__looks_like_sentence_edition(old_sent, new_sent)
             if not scores:
                 continue
             edits.append((old_sent, new_sent, scores))
 
-        log.info("got %i edited sentence(s)", len(edits))
+        log.debug("got %i edited sentence(s)", len(edits))
         return edits
 
     def __looks_like_text_edition(self, old_text, new_text):
@@ -68,7 +68,7 @@ class EditFilter(object):
 
     def __looks_like_sentence_edition(self, old_sent, new_sent):
         if old_sent == new_sent:
-            log.info("sentences are equal")
+            log.debug("sentences are equal")
             return False
 
         # the number of words in a sentence is obtained by counting the number
@@ -77,24 +77,24 @@ class EditFilter(object):
         diff = abs(counts[0] - counts[1])
 
         if diff > self.MAX_LENGTH_DIFF:
-            log.info("too large difference in number of words %i", diff)
+            log.debug("too large difference in number of words %i", diff)
             return False
 
         if min(counts) < self.MIN_WORDS_IN_SENTENCE:
-            log.info("shorter sentence has too few words")
+            log.debug("shorter sentence has too few words")
             return False
 
         if max(counts) > self.MAX_WORDS_IN_SENTENCE:
-            log.info("longer sentence has too many words")
+            log.debug("longer sentence has too many words")
             return False
 
         ratio, dist = self.__levenshtein_ratio(old_sent, new_sent)
 
         if ratio > self.MAX_LEVENSHTEIN_RATIO:
-            log.info("too high levensthein ratio %.2f", ratio)
+            log.debug("too high levensthein ratio %.2f", ratio)
             return False
 
-        return (ratio, dist)
+        return ratio, dist
 
     def __sentence_pairs(self, old_frag, new_frag):
         old_sents = self.__segmentize(old_frag)
