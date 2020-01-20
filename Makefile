@@ -1,16 +1,11 @@
-PYTHON_27 = python
+PYTHON = python3
 SHELL = /bin/bash
 
 all: setup test
 
 setup:
-	pip install -U nltk
-	$(PYTHON_27) -c "import nltk; nltk.download('punkt')"
-	pip install python-Levenshtein
-	pip install pyyaml
-	pip install nose
-	pip install joblib
-	pip install tqdm
+	pip3 install -r requirements.txt
+	$(PYTHON) -c "import nltk; nltk.download('punkt')"
 
 test:
 	nosetests
@@ -28,9 +23,5 @@ tests/data/dumps.txt: tests/data/enwiki-20140102.tiny.xml.gz
 
 clean-run:
 	rm -rf tests/workdir tests/data/enwiki-20140102.tiny.copy.xml.gz tests/data/enwiki-20140102.tiny.xml tests/data/dumps.txt
-
-clean: clean-run
-	find . -name "*~" -type f -delete
-	find . -name "*.pyc" -type f -delete
 
 .PHONY: all setup test test-run clean clean-run
