@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 import argparse
@@ -27,8 +27,6 @@ def parse_user_args():
 
     parser.add_argument("input", default=sys.stdin, nargs="?",
                         help="Wiki XML dump with complete edit history")
-    parser.add_argument("output", nargs="?",
-                        help="File for extracted editions")
 
     parser.add_argument("-m", "--meta-data", action="store_true",
                         help="add revision meta data like comment, user, etc.")
@@ -69,9 +67,8 @@ def main():
 
     input_file, file_name = get_input_file(args.input)
 
-    if not args.output:
-        args.output = os.path.splitext(file_name)[0] + ".edits"
-    out_files = {output_type: open(args.output + output_type, 'w') for output_type in output_types}
+    output = os.path.splitext(file_name)[0]
+    out_files = {output_type: open(output + '.' + output_type + ".edits", 'w') for output_type in output_types}
 
     # Metadata Formatting Related Option
     if args.tabify:
@@ -97,10 +94,10 @@ def main():
 
         if args.meta_data and edits:
             out.write(format_meta_data(meta) + "\n")
-
-        for (old_edit, new_edit, scores) in edits:
-            out.write(output_format.format(old=old_edit.encode('utf-8'),
-                                           new=new_edit.encode('utf-8'),
+        for x in edits:
+            (old_edit, new_edit, scores) = x
+            out.write(output_format.format(old=old_edit,
+                                           new=new_edit,
                                            ratio=scores[0],
                                            dist=scores[1]))
 
@@ -152,7 +149,8 @@ def format_meta_data(meta):
 
 
 def select_output(meta):
-    if re.search("व्याक|वर्तनी|मात्रा|grammar|grammatical|grammer|fixed|पाठ|विराम|चिह्न", meta["comment"]):
+    if 'comment' in meta and re.search("व्याक|वर्तनी|मात्रा|grammar|grammatical|grammer|fixed|पाठ|विराम|चिह्न",
+                                       meta["comment"]):
         output_type = 'annotated'
     else:
         output_type = 'unannotated'
@@ -160,5 +158,4 @@ def select_output(meta):
 
 
 if __name__ == "__main__":
-    # main()
-    pass
+    main()
