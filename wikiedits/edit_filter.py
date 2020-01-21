@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from wikiedits.diff_finder import DiffFinder
-from indic_sentence_tokenizer import IndicSentenceTokenizer,LANGUAGES
+from .indic_sentence_tokenizer import IndicSentenceTokenizer,LANGUAGES
 import nltk.data
 import Levenshtein
 import math
@@ -19,7 +19,7 @@ class EditFilter(object):
                  length_diff=4,
                  edit_ratio=0.3,
                  min_chars=10):
-        if lang in LANGAUGES:
+        if lang in LANGUAGES:
             self.segmentizer=IndicSentenceTokenizer()
         self.segmenter = nltk.data.load('tokenizers/punkt/%s.pickle' % lang)
         self.LEVENSHTEIN_RATIO_LOG_BASE = 20
