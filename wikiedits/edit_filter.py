@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 
-import logging
+from wikiedits.diff_finder import DiffFinder
+from indic_sentence_tokenizer import IndicSentenceTokenizer,LANGUAGES
+import nltk.data
+import Levenshtein
 import math
 
-import Levenshtein
-import nltk.data
-
+import logging
 log = logging.getLogger(__name__)
 
 
@@ -18,16 +19,15 @@ class EditFilter(object):
                  length_diff=4,
                  edit_ratio=0.3,
                  min_chars=10):
-
+        if lang in LANGAUGES:
+            self.segmentizer=IndicSentenceTokenizer()
         self.segmenter = nltk.data.load('tokenizers/punkt/%s.pickle' % lang)
-
         self.LEVENSHTEIN_RATIO_LOG_BASE = 20
-
-        self.MIN_TEXT_LENGTH = min_chars  # in characters
-        self.MIN_WORDS_IN_SENTENCE = min_words  # in words
-        self.MAX_WORDS_IN_SENTENCE = max_words  # in words
-        self.MAX_LENGTH_DIFF = length_diff  # on words
-        self.MAX_LEVENSHTEIN_RATIO = edit_ratio  # on words
+        self.MIN_TEXT_LENGTH = min_chars                # in characters
+        self.MIN_WORDS_IN_SENTENCE = min_words          # in words
+        self.MAX_WORDS_IN_SENTENCE = max_words          # in words
+        self.MAX_LENGTH_DIFF = length_diff              # on words
+        self.MAX_LEVENSHTEIN_RATIO = edit_ratio         # on words
 
     def filter_edits(self, old_text, new_text):
         log.debug("processing texts:\n  >>> %s\n  >>> %s", old_text, new_text)
@@ -54,7 +54,6 @@ class EditFilter(object):
         if not old_text or not new_text:
             log.debug("either old or new text fragment is empty")
             return False
-
         if old_text == new_text:
             log.debug("texts are equal")
             return False
