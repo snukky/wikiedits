@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from wikiedits.diff_finder import DiffFinder
-
+from indic_sentence_tokenizer import IndicSentenceTokenizer,LANGUAGES
 import nltk.data
 import Levenshtein
 import math
@@ -19,11 +19,10 @@ class EditFilter(object):
                  length_diff=4,
                  edit_ratio=0.3,
                  min_chars=10):
-
+        if lang in LANGAUGES:
+            self.segmentizer=IndicSentenceTokenizer()
         self.segmenter = nltk.data.load('tokenizers/punkt/%s.pickle' % lang)
-
         self.LEVENSHTEIN_RATIO_LOG_BASE = 20
-
         self.MIN_TEXT_LENGTH = min_chars                # in characters
         self.MIN_WORDS_IN_SENTENCE = min_words          # in words
         self.MAX_WORDS_IN_SENTENCE = max_words          # in words
@@ -55,7 +54,6 @@ class EditFilter(object):
         if not old_text or not new_text:
             log.debug("either old or new text fragment is empty")
             return False
-
         if old_text == new_text:
             log.debug("texts are equal")
             return False

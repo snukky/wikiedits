@@ -1,4 +1,5 @@
-class HindiSentenceTokenizer:
+LANGUAGES=('hindi','bengali','punjabi')
+class IndicSentenceTokenizer:
     def tokenize(self,text):
         sentence_end=('|','।','!','?')
         text_len=len(text)

@@ -1,12 +1,12 @@
 import unittest
-from wikiedits.hindi_sentence_tokenizer import HindiSentenceTokenizer
+from wikiedits.Indic_Sentence_Tokenizer import IndicSentenceTokenizer
 
 
 class TestHindiSentenceTokenizer(unittest.TestCase):
 
     def setUp(self):
 
-        self.tokenizer = HindiSentenceTokenizer()
+        self.tokenizer = IndicSentenceTokenizer()
 
     def test_tokenize_simple(self):
         text = """कालिंजर दुर्ग, दुर्ग है। बुन्देलखण्ड  धरोहर स्थल खजुराहो से ९७.७ किमी दूर है। इसे भारत के सजाता रहा है। इस दुर्ग में कई प्राचीन मन्दिर हैं। इनमें कई गुप्तकाल के हैं।  शिव ने यही तपस्या कर उसकी ज्वाला शांत की थी। """
