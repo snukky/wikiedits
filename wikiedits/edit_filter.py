@@ -10,7 +10,7 @@ import logging
 log = logging.getLogger(__name__)
 
 
-class EditFilter(object):
+class EditFilter:
 
     def __init__(self,
                  lang='english',
@@ -20,8 +20,9 @@ class EditFilter(object):
                  edit_ratio=0.3,
                  min_chars=10):
         if lang in LANGUAGES:
-            self.segmentizer=IndicSentenceTokenizer()
-        self.segmenter = nltk.data.load('tokenizers/punkt/%s.pickle' % lang)
+            self.segmenter=IndicSentenceTokenizer()
+        else:
+            self.segmenter = nltk.data.load('tokenizers/punkt/%s.pickle' % lang)
         self.LEVENSHTEIN_RATIO_LOG_BASE = 20
         self.MIN_TEXT_LENGTH = min_chars                # in characters
         self.MIN_WORDS_IN_SENTENCE = min_words          # in words
