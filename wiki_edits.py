@@ -150,7 +150,7 @@ def format_meta_data(meta):
 
 def select_output(meta):
     if 'comment' in meta and re.search("व्याक|वर्तनी|मात्रा|grammar|grammatical|grammer|fixed|पाठ|विराम|चिह्न",
-                                       meta["comment"]):
+                                       meta["comment"]) is not None:
         output_type = 'annotated'
     else:
         output_type = 'unannotated'
