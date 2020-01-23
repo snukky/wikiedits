@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 
 import re
-
+from more_itertools import pairwise
 from wikiedits.wiki import VANDALISM_REGEXES
 from wikiedits.wiki.wiki_dump_parser import WikiDumpParser
 from . import WikiExtractor
 
 HTML_TAG_REGEX = r'<[^>]{1,20}?>'
 
-
+cs=0
 class RevisionIterator(object):
 
     def __init__(self, filename, lang='english'):
@@ -16,14 +16,21 @@ class RevisionIterator(object):
         self.vandalism_regex = re.compile(VANDALISM_REGEXES[lang],
                                           re.IGNORECASE)
 
-    def adjacent_revisions(self):
+    def adjacent_revisios(self):
         prev_rev, rev = None, None
 
         for next_rev in self.dump.rev_iter():
+            if next_rev is None:
+                print("hallasd")
+            global cs
+            cs+=1
+           # print(cs)
             comment = next_rev.get('comment', '')
-            if self.__is_revert_vandalism(comment):
-                rev = None
-                continue
+
+            #
+            # if self.vandalism_regex.search(comment) is not None:
+            #     rev = None
+            #     continue
 
             if prev_rev is not None and rev is not None:
                 yield (prev_rev, rev)
@@ -37,9 +44,21 @@ class RevisionIterator(object):
         if prev_rev is not None and rev is not None:
             yield (prev_rev, rev)
 
+
+
+    def clean_revision(self,revision):
+        text=revision.get('text','')
+        clean_text = self.clean_markups(text)
+        revision['text'] = clean_text
+        return revision
+
+    def adjacent_revisions(self):
+        for old_rev, new_rev in pairwise(map(self.clean_revision,self.dump.rev_iter())):
+            if self.vandalism_regex.search(new_rev.get('comment','')) is not None:
+                continue
+            yield old_rev, new_rev
+
     def clean_markups(self, text):
-        if not text:
-            return ""
 
         clean_text = WikiExtractor.clean(text)
         clean_frags = WikiExtractor.compact(clean_text)
@@ -47,8 +66,3 @@ class RevisionIterator(object):
                       for frag in clean_frags]
 
         return "\n".join(clean_html) if len(clean_html) > 0 else ""
-
-    def __is_revert_vandalism(self, comment):
-        if isinstance(comment, str):
-            return bool(self.vandalism_regex.search(comment))
-        return False

@@ -1,7 +1,11 @@
 # -*- coding: utf-8 -*-
 
+import logging
+
 from wikiedits.edit_extractor import EditExtractor
 from .wiki.revision_iterator import RevisionIterator
+
+log = logging.getLogger(__name__)
 
 
 class WikiEditExtractor:
@@ -11,9 +15,13 @@ class WikiEditExtractor:
         self.extractor = EditExtractor(**kwargs)
 
     def extract_edits(self):
-        for old_text, new_text, meta in self.__revision_pair():
+        n_edits = 0
+        for index, (old_text, new_text, meta) in enumerate(self.__revision_pair()):
+            log.info(f"Processed Revisions: {index}")
             edits = self.extractor.extract_edits(old_text, new_text)
             if edits:
+                n_edits += len(edits)
+                log.info(f"Processed Edits: {n_edits}")
                 yield (edits, meta)
 
     def __revision_pair(self):

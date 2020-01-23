@@ -4,6 +4,9 @@ from wikiedits.diff_finder import DiffFinder
 from wikiedits.edit_filter import EditFilter
 
 
+import logging
+log = logging.getLogger(__name__)
+
 class EditExtractor:
 
     def __init__(self, **kwargs):
