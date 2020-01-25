@@ -12,8 +12,7 @@ class RevisionIterator:
 
     def __init__(self, filename, lang='english'):
         self.dump = WikiDumpParser(filename)
-        self.vandalism_regex = re.compile(VANDALISM_REGEXES[lang],
-                                          re.IGNORECASE)
+        self.vandalism_regex = VANDALISM_REGEXES[lang]
 
     def adjacent_revisions(self):
         dmp_itr = self.dump.rev_iter()

@@ -1,4 +1,5 @@
 #  -*- coding: utf-8 -*-
+import re
 
 VANDALISM_REGEXES = {
     'english': "vandal|stupid|revert",
@@ -8,3 +9,5 @@ VANDALISM_REGEXES = {
     'bengali': "revert|বাতিল",
     'punjabi': "revert|ਸੋਧਾਂ ਵਾਪਸ|ਨਕਾਰੀ"
 }
+
+VANDALISM_REGEXES = {language: re.compile(VANDALISM_REGEXES[language], re.IGNORECASE) for language in VANDALISM_REGEXES}

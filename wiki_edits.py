@@ -148,7 +148,7 @@ def format_meta_data(meta):
 
 def select_output(meta):
     if 'comment' in meta and re.search(INDIC_GRAMMAR_REGEX,
-                                       meta["comment"], re.IGNORECASE) is not None:
+                                       meta["comment"]) is not None:
         output_type = 'annotated'
     else:
         output_type = 'unannotated'
@@ -156,4 +156,6 @@ def select_output(meta):
 
 
 if __name__ == "__main__":
+    #import cProfile
+    #cProfile.run('main(parse_user_args())',sort='cumtime')
     main(parse_user_args())
