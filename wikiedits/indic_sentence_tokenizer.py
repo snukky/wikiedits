@@ -1,7 +1,9 @@
-LANGUAGES = ('hindi', 'bengali', 'punjabi')
-
+import string
 
 class IndicSentenceTokenizer:
+    LANGUAGES = ('hindi', 'bengali', 'punjabi')
+    NON_INDIC = string.printable.strip(string.whitespace)
+
     def tokenize(self, text):
         sentence_end = ('|', '।', '!', '?')
         pos = [0] * len(sentence_end)

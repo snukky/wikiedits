@@ -6,7 +6,7 @@ import math
 import Levenshtein
 import nltk.data
 
-from .indic_sentence_tokenizer import IndicSentenceTokenizer, LANGUAGES
+from .indic_sentence_tokenizer import IndicSentenceTokenizer
 
 log = logging.getLogger(__name__)
 
@@ -20,16 +20,17 @@ class EditFilter:
                  length_diff=4,
                  edit_ratio=0.3,
                  min_chars=10):
-        if lang in LANGUAGES:
+        if lang in IndicSentenceTokenizer.LANGUAGES:
             self.segmenter = IndicSentenceTokenizer()
         else:
             self.segmenter = nltk.data.load('tokenizers/punkt/%s.pickle' % lang)
         self.LEVENSHTEIN_RATIO_LOG_BASE = 20
-        self.MIN_TEXT_LENGTH = min_chars                # in characters
-        self.MIN_WORDS_IN_SENTENCE = min_words          # in words
-        self.MAX_WORDS_IN_SENTENCE = max_words          # in words
-        self.MAX_LENGTH_DIFF = length_diff              # on words
-        self.MAX_LEVENSHTEIN_RATIO = edit_ratio         # on words
+        self.MIN_TEXT_LENGTH = min_chars  # in characters
+        self.MIN_WORDS_IN_SENTENCE = min_words  # in words
+        self.MAX_WORDS_IN_SENTENCE = max_words  # in words
+        self.MAX_LENGTH_DIFF = length_diff  # on words
+        self.MAX_LEVENSHTEIN_RATIO = edit_ratio  # on words
+        self.LANG = lang
 
     def filter_edits(self, old_text, new_text):
         log.debug("processing texts:\n  >>> %s\n  >>> %s", old_text, new_text)
@@ -38,6 +39,10 @@ class EditFilter:
 
         edits = []
         for old_sent, new_sent in self.__sentence_pairs(old_text, new_text):
+            if self.LANG in IndicSentenceTokenizer.LANGUAGES:
+                old_sent = old_sent.strip(IndicSentenceTokenizer.NON_INDIC)
+                new_sent = new_sent.strip(IndicSentenceTokenizer.NON_INDIC)
+
             old_sent = old_sent.strip()
             new_sent = new_sent.strip()
 
@@ -120,7 +125,7 @@ class EditFilter:
         ratio = dist / float(min_words) * math.log(min_words,
                                                    self.LEVENSHTEIN_RATIO_LOG_BASE)
 
-        return (ratio, dist)
+        return ratio, dist
 
     def __levenshtein_on_words(self, words1, words2):
         char = 32  # 32 + 33 = 'A'

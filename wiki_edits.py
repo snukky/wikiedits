@@ -12,7 +12,7 @@ from urllib.parse import urlparse
 
 import yaml
 
-from wikiedits import LANGUAGES
+from wikiedits import LANGUAGES, INDIC_GRAMMAR_REGEX
 from wikiedits.wiki_edit_extractor import WikiEditExtractor
 
 log = logging.getLogger(__name__)
@@ -149,8 +149,8 @@ def format_meta_data(meta):
 
 
 def select_output(meta):
-    if 'comment' in meta and re.search("व्याक|वर्तनी|मात्रा|grammar|grammatical|grammer|fixed|पाठ|विराम|चिह्न",
-                                       meta["comment"]) is not None:
+    if 'comment' in meta and re.search(INDIC_GRAMMAR_REGEX,
+                                       meta["comment"],re.IGNORECASE) is not None:
         output_type = 'annotated'
     else:
         output_type = 'unannotated'
