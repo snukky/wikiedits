@@ -54,11 +54,7 @@ Options:
   -h, --help            : display this help and exit
 """
 
-import bz2
-import getopt
-import os.path
 import re
-import sys
 from html.entities import name2codepoint
 
 ### PARAMS ####################################################################
@@ -82,18 +78,14 @@ keepSections = False
 # wiktionary: Wiki dictionry
 # wikt: shortcut for Wikctionry
 #
-acceptedNamespaces = set(['w', 'wiktionary', 'wikt'])
+acceptedNamespaces = {'w', 'wiktionary', 'wikt'}
 
 ##
 # Drop these elements from article text
 #
-discardElements = set([
-    'gallery', 'timeline', 'noinclude', 'pre',
-    'table', 'tr', 'td', 'th', 'caption',
-    'form', 'input', 'select', 'option', 'textarea',
-    'ul', 'li', 'ol', 'dl', 'dt', 'dd', 'menu', 'dir',
-    'ref', 'references', 'img', 'imagemap', 'source'
-])
+discardElements = {'gallery', 'timeline', 'noinclude', 'pre', 'table', 'tr', 'td', 'th', 'caption', 'form', 'input',
+                   'select', 'option', 'textarea', 'ul', 'li', 'ol', 'dl', 'dt', 'dd', 'menu', 'dir', 'ref',
+                   'references', 'img', 'imagemap', 'source'}
 
 # =========================================================================
 #
@@ -469,7 +461,6 @@ def compact(text):
     page = []  # list of paragraph
     headers = {}  # Headers for unfilled sections
     emptySection = False  # empty sections are discarded
-    inList = False  # whether opened <UL>
 
     for line in text.split('\n'):
 
@@ -522,201 +513,3 @@ def compact(text):
             page.append(line)
 
     return page
-
-
-def handle_unicode(entity):
-    numeric_code = int(entity[2:-1])
-    if numeric_code >= 0x10000:
-        return ''
-    return chr(numeric_code)
-
-
-# ------------------------------------------------------------------------------
-
-
-class OutputSplitter:
-    def __init__(self, compress, max_file_size, path_name):
-        self.dir_index = 0
-        self.file_index = -1
-        self.compress = compress
-        self.max_file_size = max_file_size
-        self.path_name = path_name
-        self.out_file = self.open_next_file()
-
-    def reserve(self, size):
-        cur_file_size = self.out_file.tell()
-        if cur_file_size + size > self.max_file_size:
-            self.close()
-            self.out_file = self.open_next_file()
-
-    def write(self, text):
-        self.out_file.write(text)
-
-    def close(self):
-        self.out_file.close()
-
-    def open_next_file(self):
-        self.file_index += 1
-        if self.file_index == 100:
-            self.dir_index += 1
-            self.file_index = 0
-        dir_name = self.dir_name()
-        if not os.path.isdir(dir_name):
-            os.makedirs(dir_name)
-        file_name = os.path.join(dir_name, self.file_name())
-        if self.compress:
-            return bz2.BZ2File(file_name + '.bz2', 'w')
-        else:
-            return open(file_name, 'w')
-
-    def dir_name(self):
-        char1 = self.dir_index % 26
-        char2 = self.dir_index / 26 % 26
-        return os.path.join(self.path_name, '%c%c' % (ord('A') + char2, ord('A') + char1))
-
-    def file_name(self):
-        return 'wiki_%02d' % self.file_index
-
-
-### READER ###################################################################
-
-
-tagRE = re.compile(r'(.*?)<(/?\w+)[^>]*>(?:([^<]*)(<.*?>)?)?')
-
-
-def process_data(input, output):
-    global prefix
-
-    page = []
-    id = None
-    inText = False
-    redirect = False
-    for line in input:
-        line = line.decode('utf-8')
-        tag = ''
-        if '<' in line:
-            m = tagRE.search(line)
-            if m:
-                tag = m.group(2)
-        if tag == 'page':
-            page = []
-            redirect = False
-        elif tag == 'id' and not id:
-            id = m.group(3)
-        elif tag == 'title':
-            title = m.group(3)
-        elif tag == 'redirect':
-            redirect = True
-        elif tag == 'text':
-            inText = True
-            line = line[m.start(3):m.end(3)] + '\n'
-            page.append(line)
-            if m.lastindex == 4:  # open-close
-                inText = False
-        elif tag == '/text':
-            if m.group(1):
-                page.append(m.group(1) + '\n')
-            inText = False
-        elif inText:
-            page.append(line)
-        elif tag == '/page':
-            colon = title.find(':')
-            if (colon < 0 or title[:colon] in acceptedNamespaces) and \
-                    not redirect:
-                print(id, title.encode('utf-8'))
-                sys.stdout.flush()
-                WikiDocument(output, id, title, ''.join(page))
-            id = None
-            page = []
-        elif tag == 'base':
-            # discover prefix from the xml dump file
-            # /mediawiki/siteinfo/base
-            base = m.group(3)
-            prefix = base[:base.rfind("/")]
-
-
-### CL INTERFACE ############################################################
-
-
-def show_help():
-    print(__doc__, end=' ', file=sys.stdout)
-
-
-def show_usage(script_name):
-    print('Usage: %s [options]' % script_name, file=sys.stderr)
-
-
-##
-# Minimum size of output files
-minFileSize = 200 * 1024
-
-
-def main():
-    global keepLinks, keepSections, prefix, acceptedNamespaces
-    script_name = os.path.basename(sys.argv[0])
-
-    try:
-        long_opts = ['help', 'compress', 'bytes=', 'basename=', 'links', 'ns=', 'sections', 'output=', 'version']
-        opts, args = getopt.gnu_getopt(sys.argv[1:], 'cb:hln:o:B:sv', long_opts)
-    except getopt.GetoptError:
-        show_usage(script_name)
-        sys.exit(1)
-
-    compress = False
-    file_size = 500 * 1024
-    output_dir = '.'
-
-    for opt, arg in opts:
-        if opt in ('-h', '--help'):
-            show_help()
-            sys.exit()
-        elif opt in ('-c', '--compress'):
-            compress = True
-        elif opt in ('-l', '--links'):
-            keepLinks = True
-        elif opt in ('-s', '--sections'):
-            keepSections = True
-        elif opt in ('-B', '--base'):
-            prefix = arg
-        elif opt in ('-b', '--bytes'):
-            try:
-                if arg[-1] in 'kK':
-                    file_size = int(arg[:-1]) * 1024
-                elif arg[-1] in 'mM':
-                    file_size = int(arg[:-1]) * 1024 * 1024
-                else:
-                    file_size = int(arg)
-                if file_size < minFileSize:
-                    raise ValueError()
-            except ValueError:
-                print('%s: %s: Insufficient or invalid size' % (script_name, arg), file=sys.stderr)
-                sys.exit(2)
-        elif opt in ('-n', '--ns'):
-            acceptedNamespaces = set(arg.split(','))
-        elif opt in ('-o', '--output'):
-            output_dir = arg
-        elif opt in ('-v', '--version'):
-            print('WikiExtractor.py version:', version)
-            sys.exit(0)
-
-    if len(args) > 0:
-        show_usage(script_name)
-        sys.exit(4)
-
-    if not os.path.isdir(output_dir):
-        try:
-            os.makedirs(output_dir)
-        except:
-            print('Could not create: ', output_dir, file=sys.stderr)
-            return
-
-    if not keepLinks:
-        ignoreTag('a')
-
-    output_splitter = OutputSplitter(compress, file_size, output_dir)
-    process_data(sys.stdin, output_splitter)
-    output_splitter.close()
-
-
-if __name__ == '__main__':
-    main()
