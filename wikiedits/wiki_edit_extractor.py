@@ -26,9 +26,6 @@ class WikiEditExtractor:
 
     def __revision_pair(self):
         for old_rev, new_rev in self.revision.adjacent_revisions():
-            if 'text' in old_rev and 'text' in new_rev:
-                old_text = old_rev['text']
-                new_text = new_rev['text']
-
-                new_rev.pop('text', None)
-                yield (old_text, new_text, new_rev)
+            meta = new_rev.copy()
+            meta.pop('text')
+            yield (old_rev['text'], new_rev['text'], meta)
