@@ -57,9 +57,7 @@ def parse_user_args():
     return parser.parse_args()
 
 
-def main():
-    args = parse_user_args()
-
+def main(args):
     if args.debug:
         logging.basicConfig(level=logging.DEBUG)
     else:
@@ -150,7 +148,7 @@ def format_meta_data(meta):
 
 def select_output(meta):
     if 'comment' in meta and re.search(INDIC_GRAMMAR_REGEX,
-                                       meta["comment"],re.IGNORECASE) is not None:
+                                       meta["comment"], re.IGNORECASE) is not None:
         output_type = 'annotated'
     else:
         output_type = 'unannotated'
@@ -158,4 +156,4 @@ def select_output(meta):
 
 
 if __name__ == "__main__":
-    main()
+    main(parse_user_args())
