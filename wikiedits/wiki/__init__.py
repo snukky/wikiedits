@@ -6,5 +6,5 @@ VANDALISM_REGEXES = {
     'german': "revert|vandal|rückgängig",
     'hindi': "revert|पूर्ववत",
     'bengali': "revert|বাতিল",
-    'punjabi' :"revert|ਸੋਧਾਂ ਵਾਪਸ|ਨਕਾਰੀ"
+    'punjabi': "revert|ਸੋਧਾਂ ਵਾਪਸ|ਨਕਾਰੀ"
 }

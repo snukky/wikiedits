@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 
-from wikiedits.diff_finder import DiffFinder
-from .indic_sentence_tokenizer import IndicSentenceTokenizer,LANGUAGES
-import nltk.data
-import Levenshtein
+import logging
 import math
 
-import logging
+import Levenshtein
+import nltk.data
+
+from .indic_sentence_tokenizer import IndicSentenceTokenizer, LANGUAGES
+
 log = logging.getLogger(__name__)
 
 
@@ -20,7 +21,7 @@ class EditFilter:
                  edit_ratio=0.3,
                  min_chars=10):
         if lang in LANGUAGES:
-            self.segmenter=IndicSentenceTokenizer()
+            self.segmenter = IndicSentenceTokenizer()
         else:
             self.segmenter = nltk.data.load('tokenizers/punkt/%s.pickle' % lang)
         self.LEVENSHTEIN_RATIO_LOG_BASE = 20

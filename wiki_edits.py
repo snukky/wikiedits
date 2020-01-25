@@ -134,7 +134,7 @@ def get_input_file(input_name):
         process = subprocess.Popen(f"zcat {file_name}".split(), stdout=PIPE)
         input_file = process.stdout
     elif file_ext.startswith('.xml'):
-        input_file = open(input_name,'rb')
+        input_file = open(input_name, 'rb')
     else:
         raise TypeError("file extension {} not recognized!".format(file_ext))
 
