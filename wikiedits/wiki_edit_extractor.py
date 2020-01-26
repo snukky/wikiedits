@@ -18,14 +18,15 @@ class WikiEditExtractor:
         n_edits = 0
         for index, (old_text, new_text, meta) in enumerate(self.__revision_pair()):
             log.info(f"Processed Revisions: {index}")
-            edits = self.extractor.extract_edits(old_text, new_text)
-            if edits:
-                n_edits += len(edits)
-                log.info(f"Processed Edits: {n_edits}")
-                yield (edits, meta)
+            if new_text and old_text:
+                edits = self.extractor.extract_edits(old_text, new_text)
+                if edits:
+                    n_edits += len(edits)
+                    log.info(f"Processed Edits: {n_edits}")
+                    yield edits, meta
 
     def __revision_pair(self):
         for old_rev, new_rev in self.revision.adjacent_revisions():
             meta = new_rev.copy()
             meta.pop('text')
-            yield (old_rev['text'], new_rev['text'], meta)
+            yield old_rev['text'], new_rev['text'], meta
