@@ -17,6 +17,7 @@ class RevisionIterator:
     def adjacent_revisions(self):
         dmp_itr = self.dump.rev_iter()
         for old_rev, new_rev in pairwise(dmp_itr):
-            if self.vandalism_regex.search(new_rev.get('comment', '')) is not None:
+            if new_rev.get('comment', '') is not None and self.vandalism_regex.search(
+                    new_rev.get('comment', '')) is not None:
                 continue
             yield old_rev, new_rev
