@@ -3,7 +3,7 @@ import string
 
 class IndicSentenceTokenizer:
     LANGUAGES = ('hindi', 'bengali', 'punjabi')
-    NON_INDIC_CHAR = string.ascii_letters+string.punctuation.replace('|', '')
+    NON_INDIC_CHAR = string.ascii_letters
     NON_INDIC = str.maketrans(NON_INDIC_CHAR, " " * len(NON_INDIC_CHAR))
 
     def tokenize(self, text):
