@@ -16,14 +16,23 @@ class WikiEditExtractor:
 
     def extract_edits(self):
         n_edits = 0
-        for index, (old_text, new_text, meta) in enumerate(self.__revision_pair()):
-            log.info(f"Processed Revisions: {index}")
-            if new_text and old_text:
-                edits = self.extractor.extract_edits(old_text, new_text)
-                if edits:
-                    n_edits += len(edits)
-                    log.info(f"Processed Edits: {n_edits}")
-                    yield edits, meta
+        revs = enumerate(self.__revision_pair())
+        while True:
+            try:
+                (index, (old_text, new_text, meta)) = next(revs)
+                log.info(f"Processed Revisions: {index}")
+                if new_text and old_text:
+                    edits = self.extractor.extract_edits(old_text, new_text)
+                    if edits:
+                        n_edits += len(edits)
+                        log.info(f"Processed Edits: {n_edits}")
+                        yield edits, meta
+            except StopIteration:
+                log.info("Finished")
+                break
+            except (Exception, KeyboardInterrupt) as e:
+                log.info(e)
+                input()
 
     def __revision_pair(self):
         for old_rev, new_rev in self.revision.adjacent_revisions():
