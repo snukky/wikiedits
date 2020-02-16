@@ -5,7 +5,6 @@ import unittest
 from wikiedits.wiki_edit_extractor import WikiEditExtractor
 
 
-@unittest.skip("temporarily disabled")
 class WikiEditExtractorTest(unittest.TestCase):
     WIKI_TEMP_FILE = "enwiki.temp.xml"
 
