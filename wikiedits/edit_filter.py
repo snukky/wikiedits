@@ -34,11 +34,13 @@ class EditFilter:
 
     def filter_edits(self, old_text, new_text):
         log.debug("processing texts:\n  >>> %s\n  >>> %s", old_text, new_text)
-        if not self.__looks_like_text_edition(old_text, new_text):
+        if not self.looks_like_text_edition(old_text, new_text):
             return []
 
         edits = []
-        for old_sent, new_sent in self.__sentence_pairs(old_text, new_text):
+        for old_sent, new_sent in self.sentence_pairs(old_text, new_text):
+
+            # First remove all non Indic Characters
             if self.LANG in IndicSentenceTokenizer.LANGUAGES:
                 old_sent = old_sent.translate(IndicSentenceTokenizer.NON_INDIC)
                 new_sent = new_sent.translate(IndicSentenceTokenizer.NON_INDIC)
@@ -49,15 +51,16 @@ class EditFilter:
             log.debug("processing sentences:\n  > %s\n  > %s",
                       old_sent, new_sent)
 
-            scores = self.__looks_like_sentence_edition(old_sent, new_sent)
+            scores = self.looks_like_sentence_edition(old_sent, new_sent)
             if not scores:
                 continue
+
             edits.append((old_sent, new_sent, scores))
 
         log.debug("got %i edited sentence(s)", len(edits))
         return edits
 
-    def __looks_like_text_edition(self, old_text, new_text):
+    def looks_like_text_edition(self, old_text, new_text):
         if not old_text or not new_text:
             log.debug("either old or new text fragment is empty")
             return False
@@ -72,62 +75,62 @@ class EditFilter:
 
         return True
 
-    def __looks_like_sentence_edition(self, old_sent, new_sent):
+    def looks_like_sentence_edition(self, old_sent, new_sent):
         if old_sent == new_sent:
             log.debug("sentences are equal")
             return False
 
         # the number of words in a sentence is obtained by counting the number
         # of spaces plus one
-        counts = [old_sent.count(' ') + 1, new_sent.count(' ') + 1]
+        counts = (old_sent.count(' ') + 1, new_sent.count(' ') + 1)
         diff = abs(counts[0] - counts[1])
 
         if diff > self.MAX_LENGTH_DIFF:
-            log.debug("too large difference in number of words %i", diff)
+            #log.debug("too large difference in number of words %i", diff)
             return False
 
         if min(counts) < self.MIN_WORDS_IN_SENTENCE:
-            log.debug("shorter sentence has too few words")
+            #log.debug("shorter sentence has too few words")
             return False
 
         if max(counts) > self.MAX_WORDS_IN_SENTENCE:
-            log.debug("longer sentence has too many words")
+            #log.debug("longer sentence has too many words")
             return False
 
-        ratio, dist = self.__levenshtein_ratio(old_sent, new_sent)
+        ratio, dist = self.levenshtein_ratio(old_sent, new_sent)
 
         if ratio > self.MAX_LEVENSHTEIN_RATIO:
-            log.debug("too high levensthein ratio %.2f", ratio)
+            #log.debug("too high levensthein ratio %.2f", ratio)
             return False
 
         return ratio, dist
 
-    def __sentence_pairs(self, old_frag, new_frag):
-        old_sents = self.__segmentize(old_frag)
-        new_sents = self.__segmentize(new_frag)
+    def sentence_pairs(self, old_frag, new_frag):
+        old_sents = self.segmentize(old_frag)
+        new_sents = self.segmentize(new_frag)
 
         min_size = min(len(old_sents), len(new_sents))
         for idx in range(min_size):
             yield (' '.join(old_sents[idx].split()),
                    ' '.join(new_sents[idx].split()))
 
-    def __segmentize(self, text):
+    def segmentize(self, text):
         return [frag
                 for sent in self.segmenter.tokenize(text)
                 for frag in sent.split('; ')]
 
-    def __levenshtein_ratio(self, old_sent, new_sent):
+    def levenshtein_ratio(self, old_sent, new_sent):
         old_words = old_sent.split()
         new_words = new_sent.split()
 
         min_words = min(len(old_words), len(new_words))
-        dist = self.__levenshtein_on_words(old_words, new_words)
+        dist = self.levenshtein_on_words(old_words, new_words)
         ratio = dist / float(min_words) * math.log(min_words,
                                                    self.LEVENSHTEIN_RATIO_LOG_BASE)
 
         return ratio, dist
 
-    def __levenshtein_on_words(self, words1, words2):
+    def levenshtein_on_words(self, words1, words2):
         char = 32  # 32 + 33 = 'A'
         word_map = {}
         for word in set(words1 + words2):
