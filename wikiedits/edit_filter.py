@@ -2,6 +2,7 @@
 
 import logging
 import math
+import re
 
 import Levenshtein
 
@@ -47,9 +48,8 @@ class EditFilter:
                 old_sent = old_sent.translate(IndicSentenceTokenizer.NON_INDIC)
                 new_sent = new_sent.translate(IndicSentenceTokenizer.NON_INDIC)
 
-            old_sent = old_sent.strip()
-            new_sent = new_sent.strip()
-
+            old_sent = re.sub(r'[ ]+', ' ', old_sent).strip(' ')
+            new_sent = re.sub(r'[ ]+', ' ', new_sent).strip(' ')
             log.debug("processing sentences:\n  > %s\n  > %s",
                       old_sent, new_sent)
 
@@ -83,33 +83,31 @@ class EditFilter:
 
         # the number of words in a sentence is obtained by counting the number
         # of spaces plus one
-        counts = (old_sent.count(' ') + 1, new_sent.count(' ') + 1)
+        counts = (old_sent.split(), new_sent.count(' ') + 1)
         diff = abs(counts[0] - counts[1])
 
         if diff > self.MAX_LENGTH_DIFF:
-            #log.debug("too large difference in number of words %i", diff)
+            # log.debug("too large difference in number of words %i", diff)
             return False
 
         if min(counts) < self.MIN_WORDS_IN_SENTENCE:
-            #log.debug("shorter sentence has too few words")
+            # log.debug("shorter sentence has too few words")
             return False
 
         if max(counts) > self.MAX_WORDS_IN_SENTENCE:
-            #log.debug("longer sentence has too many words")
+            # log.debug("longer sentence has too many words")
             return False
 
         ratio, dist = self.levenshtein_ratio(old_sent, new_sent)
 
         if ratio > self.MAX_LEVENSHTEIN_RATIO:
-            #log.debug("too high levensthein ratio %.2f", ratio)
+            # log.debug("too high levensthein ratio %.2f", ratio)
             return False
 
         return ratio, dist
 
     def sentence_pairs(self, old_frag, new_frag):
-        old_sents = self.segmentize(old_frag)
-        new_sents = self.segmentize(new_frag)
-        return zip(old_frag,new_frag)
+        return zip(self.segmentize(old_frag), self.segmentize(new_frag))
 
     def segmentize(self, text):
         return [frag for sent in self.segmenter.tokenize(text)

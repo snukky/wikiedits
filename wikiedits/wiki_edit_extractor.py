@@ -16,7 +16,7 @@ class WikiEditExtractor:
 
     def extract_edits(self):
         n_edits = 0
-        revs = enumerate(self.__revision_pair())
+        revs = enumerate(self.revision_pair())
         while True:
             try:
                 (index, (old_text, new_text, meta)) = next(revs)
@@ -34,7 +34,7 @@ class WikiEditExtractor:
                 log.info(e)
                 input()
 
-    def __revision_pair(self):
+    def revision_pair(self):
         for old_rev, new_rev in self.revision.adjacent_revisions():
             meta = new_rev.copy()
             meta.pop('text')

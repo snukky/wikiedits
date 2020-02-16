@@ -156,6 +156,4 @@ def select_output(meta):
 
 
 if __name__ == "__main__":
-    #import cProfile
-    #cProfile.run('main(parse_user_args())',sort='cumtime')
     main(parse_user_args())
