@@ -147,7 +147,7 @@ def format_meta_data(meta):
 
 
 def select_output(meta):
-    if 'comment' in meta and re.search(INDIC_GRAMMAR_REGEX,
+    if meta.get('comment') is not None and re.search(INDIC_GRAMMAR_REGEX,
                                        meta["comment"]) is not None:
         output_type = 'annotated'
     else:

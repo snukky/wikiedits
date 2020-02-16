@@ -40,8 +40,8 @@ class EditFilter:
         edits = []
         for old_sent, new_sent in self.__sentence_pairs(old_text, new_text):
             if self.LANG in IndicSentenceTokenizer.LANGUAGES:
-                old_sent = old_sent.strip(IndicSentenceTokenizer.NON_INDIC)
-                new_sent = new_sent.strip(IndicSentenceTokenizer.NON_INDIC)
+                old_sent = old_sent.translate(IndicSentenceTokenizer.NON_INDIC)
+                new_sent = new_sent.translate(IndicSentenceTokenizer.NON_INDIC)
 
             old_sent = old_sent.strip()
             new_sent = new_sent.strip()
