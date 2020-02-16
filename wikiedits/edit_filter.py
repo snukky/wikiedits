@@ -4,7 +4,6 @@ import logging
 import math
 
 import Levenshtein
-import nltk.data
 
 from .indic_sentence_tokenizer import IndicSentenceTokenizer
 
@@ -20,11 +19,13 @@ class EditFilter:
                  length_diff=4,
                  edit_ratio=0.3,
                  min_chars=10):
+
         if lang in IndicSentenceTokenizer.LANGUAGES:
             self.segmenter = IndicSentenceTokenizer()
         else:
+            import nltk.data
             self.segmenter = nltk.data.load('tokenizers/punkt/%s.pickle' % lang)
-        self.LEVENSHTEIN_RATIO_LOG_BASE = 20
+
         self.MIN_TEXT_LENGTH = min_chars  # in characters
         self.MIN_WORDS_IN_SENTENCE = min_words  # in words
         self.MAX_WORDS_IN_SENTENCE = max_words  # in words
@@ -34,6 +35,7 @@ class EditFilter:
 
     def filter_edits(self, old_text, new_text):
         log.debug("processing texts:\n  >>> %s\n  >>> %s", old_text, new_text)
+
         if not self.looks_like_text_edition(old_text, new_text):
             return []
 
@@ -57,7 +59,6 @@ class EditFilter:
 
             edits.append((old_sent, new_sent, scores))
 
-        log.debug("got %i edited sentence(s)", len(edits))
         return edits
 
     def looks_like_text_edition(self, old_text, new_text):
@@ -108,15 +109,10 @@ class EditFilter:
     def sentence_pairs(self, old_frag, new_frag):
         old_sents = self.segmentize(old_frag)
         new_sents = self.segmentize(new_frag)
-
-        min_size = min(len(old_sents), len(new_sents))
-        for idx in range(min_size):
-            yield (' '.join(old_sents[idx].split()),
-                   ' '.join(new_sents[idx].split()))
+        return zip(old_frag,new_frag)
 
     def segmentize(self, text):
-        return [frag
-                for sent in self.segmenter.tokenize(text)
+        return [frag for sent in self.segmenter.tokenize(text)
                 for frag in sent.split('; ')]
 
     def levenshtein_ratio(self, old_sent, new_sent):
@@ -126,7 +122,7 @@ class EditFilter:
         min_words = min(len(old_words), len(new_words))
         dist = self.levenshtein_on_words(old_words, new_words)
         ratio = dist / float(min_words) * math.log(min_words,
-                                                   self.LEVENSHTEIN_RATIO_LOG_BASE)
+                                                   20)
 
         return ratio, dist
 
