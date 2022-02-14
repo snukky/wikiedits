@@ -27,7 +27,7 @@ The corpus has been prepared for two languages:
 * Polish: [wiked-v1.0.pl.tgz](http://data.statmt.org/romang/wiked/wiked-v1.0.pl.tgz), 301 MB
 
 The repository also includes format conversion scripts for WikEd. The scripts
-work independently form Wiki Edits and can be found in the `bin` directory.
+work independently from Wiki Edits and can be found in the `bin` directory.
 
 Requirements
 ------------
